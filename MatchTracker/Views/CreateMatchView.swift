@@ -48,8 +48,13 @@ struct CreateMatchView: View {
                     match.halfLength = halfLength * 60
                     
                     
+                    // Ensure the match is inserted if it is new
+                    if !context.hasChanges {
+                        context.insert(match)
+                    }
+
                     do {
-                        try context.save()
+                        try context.save() // Save changes
                     } catch {
                         print("Error saving match: \(error)")
                     }

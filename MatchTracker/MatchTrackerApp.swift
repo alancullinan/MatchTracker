@@ -28,7 +28,7 @@ struct MatchTrackerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MatchListView()
         }
         .modelContainer(sharedModelContainer)
     }
