@@ -11,7 +11,7 @@ import Foundation
 @Model
 class Team {
     @Attribute(.unique) var id: UUID
-    var name: String
+    var name: String = ""
     var players: [Player] = []
 
     init(name: String) {

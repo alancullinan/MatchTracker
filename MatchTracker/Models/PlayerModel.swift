@@ -11,8 +11,8 @@ import Foundation
 @Model
 class Player {
     @Attribute(.unique) var id: UUID
-    var name: String
-    var jerseyNumber: Int
+    var name: String = ""
+    var jerseyNumber: Int = 0
 
     init(name: String, jerseyNumber: Int) {
         self.id = UUID()
