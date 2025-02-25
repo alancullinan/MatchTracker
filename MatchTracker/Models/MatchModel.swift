@@ -12,8 +12,8 @@ import Foundation
 class Match {
     @Attribute(.unique) var id: UUID
     var date: Date
-    var competition: String?
-    var venue: String?
+    var competition: String = ""
+    var venue: String = ""
     var team1: Team
     var team2: Team
     var events: [Event] = []
@@ -22,12 +22,12 @@ class Match {
     var isPaused: Bool
     var lastPausedAt: Date?
     var currentPeriodStart: Date?
-    var referee: String?
+    var referee: String = ""
     var matchType: MatchType
-    var halfLength: Int
+    var halfLength: Int = 30
     var extraTimeHalfLength: Int?
 
-    init(date: Date, venue: String? = nil, competition: String, team1: Team, team2: Team, matchType: MatchType, halfLength: Int, extraTimeHalfLength: Int? = nil, referee: String? = nil) {
+    init(date: Date, venue: String, competition: String, team1: Team, team2: Team, matchType: MatchType, halfLength: Int, extraTimeHalfLength: Int, referee: String) {
         self.id = UUID()
         self.date = date
         self.venue = venue
