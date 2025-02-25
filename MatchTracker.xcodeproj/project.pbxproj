@@ -16,6 +16,11 @@
 			path = MatchTracker;
 			sourceTree = "<group>";
 		};
+		E79A55952D6B63E800586A56 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +39,7 @@
 			children = (
 				E79A55722D6B5C0400586A56 /* MatchTracker */,
 				E79A55712D6B5C0400586A56 /* Products */,
+				E79A55952D6B63E800586A56 /* Views */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +68,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				E79A55722D6B5C0400586A56 /* MatchTracker */,
+				E79A55952D6B63E800586A56 /* Views */,
 			);
 			name = MatchTracker;
 			packageProductDependencies = (
