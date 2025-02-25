@@ -24,8 +24,8 @@ class Match {
     var currentPeriodStart: Date?
     var referee: String = ""
     var matchType: MatchType
-    var halfLength: Int = 30
-    var extraTimeHalfLength: Int?
+    var halfLength: Int = 1800
+    var extraTimeHalfLength: Int = 600
 
     init(date: Date, venue: String, competition: String, team1: Team, team2: Team, matchType: MatchType, halfLength: Int, extraTimeHalfLength: Int, referee: String) {
         self.id = UUID()

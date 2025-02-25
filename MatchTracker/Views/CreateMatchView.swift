@@ -14,40 +14,58 @@ struct CreateMatchView: View {
     
     // Local state variables for editing
     @State private var competition: String = ""
-    @State private var team1: Team = ""
-    @State private var team2: Team = ""
+    @State private var team1Name: String = ""
+    @State private var team2Name: String = ""
     @State private var venue: String = ""
     @State private var matchDate: Date = Date()
+    @State private var matchType: MatchType = .ladiesFootball
+    @State private var halfLength: Int = 30
     
     var body: some View {
         Form {
             Section(header: Text("Match Details")) {
                 TextField("Competition", text: $competition)
-                // Team1
-                // Team2
+                TextField("Team 1 Name", text: $team1Name)
+                TextField("Team 2 Name", text: $team2Name)
                 TextField("Venue", text: $venue)
                 DatePicker("Date", selection: $matchDate, displayedComponents: .date)
-            }
-            Button("Save Changes") {
-                match.venue = venue
-                match.date = matchDate
-                match.competition = competition
-                
-                do {
-                    try context.save()
-                } catch {
-                    print("Error saving match: \(error)")
+                Picker("Match Type", selection: $matchType) {
+                    ForEach(MatchType.allCases, id: \.self) { type in
+                        Text(type.rawValue.capitalized).tag(type)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                Stepper(value: $halfLength, in: 10...45, step: 5) {
+                    Text("Match Length: \(halfLength) min")
+                }
+                Button("Save Changes") {
+                    match.competition = competition
+                    match.team1.name = team1Name
+                    match.team2.name = team2Name
+                    match.venue = venue
+                    match.date = matchDate
+                    match.matchType = matchType
+                    match.halfLength = halfLength * 60
+                    
+                    
+                    do {
+                        try context.save()
+                    } catch {
+                        print("Error saving match: \(error)")
+                    }
                 }
             }
-        }
-        .navigationTitle("Edit Match")
-        .onAppear {
-            // Load the match data into local variables when the view appears
-            venue = match.venue
-            matchDate = match.date
-            competition = match.competition
+            .navigationTitle("Edit Match")
+            .onAppear {
+                // Load the match data into local variables when the view appears
+                competition = match.competition
+                team1Name = match.team1.name
+                team2Name = match.team2.name
+                venue = match.venue
+                matchDate = match.date
+                matchType = match.matchType
+                halfLength = Int(match.halfLength / 60)
+            }
         }
     }
 }
-
-

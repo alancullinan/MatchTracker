@@ -12,7 +12,7 @@ enum MatchPeriod: String, Codable {
     case extraTimeFirstHalf, extraTimeHalfTime, extraTimeSecondHalf, matchOver
 }
 
-enum MatchType: String, Codable {
+enum MatchType: String, Codable, CaseIterable {
     case football, hurling, ladiesFootball, camogie
 }
 
