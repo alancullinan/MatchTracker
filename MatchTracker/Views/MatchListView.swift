@@ -8,9 +8,6 @@
 import SwiftUI
 import SwiftData
 
-import SwiftUI
-import SwiftData
-
 struct MatchListView: View {
     @Query(sort: \Match.date, order: .reverse) var matches: [Match]
     @Environment(\.modelContext) var context
