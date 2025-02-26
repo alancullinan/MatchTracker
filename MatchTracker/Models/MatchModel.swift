@@ -14,32 +14,18 @@ class Match {
     var date: Date
     var competition: String = ""
     var venue: String = ""
-    var team1: Team
-    var team2: Team
+    var team1: Team = Team(name: "")
+    var team2: Team = Team(name: "")
     var events: [Event] = []
-    var matchPeriod: MatchPeriod
-    var elapsedTime: Int
+    var matchPeriod: MatchPeriod = .notStarted
+    var elapsedTime: Int = 0
     var isPaused: Bool
     var lastPausedAt: Date?
     var currentPeriodStart: Date?
     var referee: String = ""
-    var matchType: MatchType
+    var matchType: MatchType = .ladiesFootball
     var halfLength: Int = 1800
     var extraTimeHalfLength: Int = 600
 
-    init(date: Date, venue: String, competition: String, team1: Team, team2: Team, matchType: MatchType, halfLength: Int, extraTimeHalfLength: Int, referee: String) {
-        self.id = UUID()
-        self.date = date
-        self.venue = venue
-        self.competition = competition
-        self.team1 = team1
-        self.team2 = team2
-        self.matchPeriod = .notStarted
-        self.elapsedTime = 0
-        self.isPaused = false
-        self.matchType = matchType
-        self.halfLength = halfLength
-        self.extraTimeHalfLength = extraTimeHalfLength
-        self.referee = referee
-    }
+    init() {}
 }
