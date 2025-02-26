@@ -30,15 +30,7 @@ struct MatchListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink("New Match") {
-                        let newMatch = Match(date: Date(),
-                                             venue: "",
-                                             competition: "",
-                                             team1: Team(name: ""),
-                                             team2: Team(name: ""),
-                                             matchType: .ladiesFootball,
-                                             halfLength: 1800,
-                                             extraTimeHalfLength: 600,
-                                             referee: "")
+                        let newMatch = Match()
                         CreateMatchView(match: newMatch)
                     }
                 }
