@@ -14,14 +14,30 @@ struct MatchListView: View {
     
     var body: some View {
         NavigationView {
-            List(matches, id: \.id) { match in
-                VStack(alignment: .leading) {
-                    Text(match.venue)
-                        .font(.headline)
-                    Text(match.date, style: .date)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+            List {
+                ForEach(matches, id: \.id) { match in
+                    NavigationLink {
+                        CreateMatchView(match: match)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(match.venue.isEmpty ? "No Venue" : match.venue)
+                                .font(.headline)
+                            HStack {
+                                Text(match.team1.name.isEmpty ? "Team 1" : match.team1.name)
+                                Text("vs")
+                                    .foregroundColor(.secondary)
+                                Text(match.team2.name.isEmpty ? "Team 2" : match.team2.name)
+                            }
+                            .font(.subheadline)
+                            
+                            Text(match.date, style: .date)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
+                .onDelete(perform: deleteMatches)
             }
             .navigationTitle("Matches")
             .toolbar {
@@ -31,12 +47,20 @@ struct MatchListView: View {
                         CreateMatchView(match: newMatch)
                     }
                 }
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
+                }
             }
         }
     }
+    
+    private func deleteMatches(at offsets: IndexSet) {
+        for index in offsets {
+            context.delete(matches[index])
+        }
+    }
 }
-
-
 
 struct MatchListView_Previews: PreviewProvider {
     static var previews: some View {
@@ -51,7 +75,13 @@ struct MatchListView_Previews: PreviewProvider {
         // Insert some test data.
         let testTeam1 = Team(name: "Test Team A")
         let testTeam2 = Team(name: "Test Team B")
-        let testMatch = Match(date: Date(), venue: "Test Venue", competition: "", team1: testTeam1, team2: testTeam2, matchType: .football, halfLength: 1800, extraTimeHalfLength: 600, referee: "")
+        
+        let testMatch = Match()
+        testMatch.date = Date()
+        testMatch.venue = "Test Venue"
+        testMatch.team1 = testTeam1
+        testMatch.team2 = testTeam2
+        testMatch.matchType = .football
         
         context.insert(testTeam1)
         context.insert(testTeam2)
