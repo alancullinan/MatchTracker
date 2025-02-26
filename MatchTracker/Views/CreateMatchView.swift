@@ -10,67 +10,58 @@ import SwiftData
 
 struct CreateMatchView: View {
     @Environment(\.modelContext) var context
+    @Environment(\.dismiss) var dismiss
     @Bindable var match: Match
-    
-    // Local state variables for editing
-    @State private var competition: String = ""
-    @State private var team1Name: String = ""
-    @State private var team2Name: String = ""
-    @State private var venue: String = ""
-    @State private var matchDate: Date = Date()
-    @State private var matchType: MatchType = .ladiesFootball
-    @State private var halfLength: Int = 30
+    @State private var isNewMatch: Bool = false
     
     var body: some View {
         Form {
             Section(header: Text("Match Details")) {
-                TextField("Competition", text: $competition)
-                TextField("Team 1 Name", text: $team1Name)
-                TextField("Team 2 Name", text: $team2Name)
-                TextField("Venue", text: $venue)
+                TextField("Competition", text: $match.competition)
+                TextField("Team 1 Name", text: $match.team1.name)
+                TextField("Team 2 Name", text: $match.team2.name)
+                TextField("Venue", text: $match.venue)
                 DatePicker("Date", selection: $matchDate, displayedComponents: .date)
-                Picker("Match Type", selection: $matchType) {
+                Picker("Match Type", selection: $match.matchType) {
                     ForEach(MatchType.allCases, id: \.self) { type in
                         Text(type.rawValue.capitalized).tag(type)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                Stepper(value: $halfLength, in: 10...45, step: 5) {
-                    Text("Match Length: \(halfLength) min")
+                
+                let halfLengthInMinutes = Binding<Int>(
+                    get: { Int(match.halfLength / 60) },
+                    set: { match.halfLength = $0 * 60 }
+                )
+                
+                Stepper(value: halfLengthInMinutes, in: 10...45, step: 5) {
+                    Text("Match Length: \(halfLengthInMinutes.wrappedValue) min")
                 }
-                Button("Save Changes") {
-                    match.competition = competition
-                    match.team1.name = team1Name
-                    match.team2.name = team2Name
-                    match.venue = venue
-                    match.date = matchDate
-                    match.matchType = matchType
-                    match.halfLength = halfLength * 60
-                    
-                    
-                    // Ensure the match is inserted if it is new
-                    if !context.hasChanges {
-                        context.insert(match)
+               
+            }
+            .navigationTitle(isNewMatch ? "New Match" : "Edit Match")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        // Only insert if this is a new match
+                        if isNewMatch {
+                            context.insert(match)
+                        }
+                        // Changes are already tracked by SwiftData
+                        dismiss()
                     }
-
-                    do {
-                        try context.save() // Save changes
-                    } catch {
-                        print("Error saving match: \(error)")
+                }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
                     }
                 }
             }
-            .navigationTitle("Edit Match")
-            .onAppear {
-                // Load the match data into local variables when the view appears
-                competition = match.competition
-                team1Name = match.team1.name
-                team2Name = match.team2.name
-                venue = match.venue
-                matchDate = match.date
-                matchType = match.matchType
-                halfLength = Int(match.halfLength / 60)
-            }
+        }
+        .onAppear {
+            // Check if this is a new match that hasn't been inserted yet
+            isNewMatch = context.model(for: match) == nil
         }
     }
 }
