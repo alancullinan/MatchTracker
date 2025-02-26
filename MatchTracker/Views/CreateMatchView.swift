@@ -21,7 +21,7 @@ struct CreateMatchView: View {
                 TextField("Team 1 Name", text: $match.team1.name)
                 TextField("Team 2 Name", text: $match.team2.name)
                 TextField("Venue", text: $match.venue)
-                DatePicker("Date", selection: $matchDate, displayedComponents: .date)
+                DatePicker("Date", selection: $match.date, displayedComponents: .date)
                 Picker("Match Type", selection: $match.matchType) {
                     ForEach(MatchType.allCases, id: \.self) { type in
                         Text(type.rawValue.capitalized).tag(type)
