@@ -20,7 +20,7 @@ struct MatchListView: View {
                         CreateMatchView(match: match)
                     } label: {
                         VStack(alignment: .leading) {
-                            Text(match.venue.isEmpty ? "No Venue" : match.venue)
+                            Text(match.competition.isEmpty ? "Challenge" : match.competition)
                                 .font(.headline)
                             HStack {
                                 Text(match.team1.name.isEmpty ? "Team 1" : match.team1.name)
@@ -73,12 +73,13 @@ struct MatchListView_Previews: PreviewProvider {
         let context = container.mainContext
         
         // Insert some test data.
-        let testTeam1 = Team(name: "Test Team A")
-        let testTeam2 = Team(name: "Test Team B")
+        let testTeam1 = Team(name: "Commercials")
+        let testTeam2 = Team(name: "Newcastle")
         
         let testMatch = Match()
         testMatch.date = Date()
         testMatch.venue = "Test Venue"
+        testMatch.competition = "U16 A Championship"
         testMatch.team1 = testTeam1
         testMatch.team2 = testTeam2
         testMatch.matchType = .football
