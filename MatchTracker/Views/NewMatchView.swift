@@ -13,6 +13,13 @@ struct NewMatchView: View {
     @Binding var isPresented: Bool
     @State private var match = Match()
     
+    // Computed property to check if form is valid
+    private var isFormValid: Bool {
+        !match.competition.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !match.team1.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !match.team2.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
     var body: some View {
         NavigationView {
             MatchFormView(match: match)
@@ -29,6 +36,7 @@ struct NewMatchView: View {
                             context.insert(match)
                             isPresented = false
                         }
+                        .disabled(!isFormValid)
                     }
                 }
         }
