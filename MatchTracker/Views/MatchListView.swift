@@ -11,13 +11,14 @@ import SwiftData
 struct MatchListView: View {
     @Query(sort: \Match.date, order: .reverse) var matches: [Match]
     @Environment(\.modelContext) var context
+    @State private var showingNewMatch = false
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(matches, id: \.id) { match in
                     NavigationLink {
-                        CreateMatchView(match: match)
+                        EditMatchView(match: match)
                     } label: {
                         VStack(alignment: .leading) {
                             Text(match.competition.isEmpty ? "Challenge" : match.competition)
@@ -42,15 +43,17 @@ struct MatchListView: View {
             .navigationTitle("Matches")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink("New Match") {
-                        let newMatch = Match()
-                        CreateMatchView(match: newMatch)
+                    Button("New Match") {
+                        showingNewMatch = true
                     }
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {
                     EditButton()
                 }
+            }
+            .sheet(isPresented: $showingNewMatch) {
+                NewMatchView(isPresented: $showingNewMatch)
             }
         }
     }

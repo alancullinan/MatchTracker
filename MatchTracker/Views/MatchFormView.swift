@@ -1,18 +1,15 @@
 //
-//  CreateMatchView.swift
+//  MatchFormView.swift
 //  MatchTracker
 //
-//  Created by Alan Cullinan on 23/02/2025.
+//  Created by Alan Cullinan on 26/02/2025.
 //
 
 import SwiftUI
 import SwiftData
 
-struct CreateMatchView: View {
-    @Environment(\.modelContext) var context
-    @Environment(\.dismiss) var dismiss
+struct MatchFormView: View {
     @Bindable var match: Match
-    @State private var isNewMatch: Bool = false
     
     var body: some View {
         Form {
@@ -37,31 +34,7 @@ struct CreateMatchView: View {
                 Stepper(value: halfLengthInMinutes, in: 10...45, step: 5) {
                     Text("Match Length: \(halfLengthInMinutes.wrappedValue) min")
                 }
-               
             }
-            .navigationTitle(isNewMatch ? "New Match" : "Edit Match")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        // Only insert if this is a new match
-                        if isNewMatch {
-                            context.insert(match)
-                        }
-                        // Changes are already tracked by SwiftData
-                        dismiss()
-                    }
-                }
-                
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .onAppear {
-            // Check if this is a new match that hasn't been inserted yet
-            isNewMatch = context.model(for: match) == nil
         }
     }
 }
