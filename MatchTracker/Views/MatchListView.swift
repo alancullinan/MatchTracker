@@ -18,7 +18,7 @@ struct MatchListView: View {
             List {
                 ForEach(matches, id: \.id) { match in
                     NavigationLink {
-                        EditMatchView(match: match)
+                        MatchView(match: match)
                     } label: {
                         VStack(alignment: .leading) {
                             Text(match.competition.isEmpty ? "Challenge" : match.competition)
