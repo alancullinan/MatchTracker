@@ -56,6 +56,7 @@ struct MatchListView: View {
                 NewMatchView(isPresented: $showingNewMatch)
             }
         }
+        .preferredColorScheme(.dark)
     }
     
     private func deleteMatches(at offsets: IndexSet) {
