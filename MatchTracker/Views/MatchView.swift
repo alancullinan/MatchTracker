@@ -24,6 +24,8 @@ struct MatchView: View {
             Text("Match View")
                 .font(.title)
                 .padding()
+            MatchTimerView(match: match)
+
             
             Spacer()
         }

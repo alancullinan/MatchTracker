@@ -7,9 +7,16 @@
 
 import Foundation
 
-enum MatchPeriod: String, Codable {
-    case notStarted, firstHalf, halfTime, secondHalf, fullTime
-    case extraTimeFirstHalf, extraTimeHalfTime, extraTimeSecondHalf, matchOver
+enum MatchPeriod: String, Codable, CaseIterable {
+    case notStarted = "Not Started"
+    case firstHalf = "First Half"
+    case halfTime = "Half Time"
+    case secondHalf = "Second Half"
+    case fullTime = "Full Time"
+    case extraTimeFirstHalf = "Extra Time First Half"
+    case extraTimeHalfTime = "Extra Time Half Time"
+    case extraTimeSecondHalf = "Extra Time Second Half"
+    case matchOver = "Match Over"
 }
 
 enum MatchType: String, Codable, CaseIterable {
