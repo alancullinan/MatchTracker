@@ -13,7 +13,10 @@ enum MatchPeriod: String, Codable {
 }
 
 enum MatchType: String, Codable, CaseIterable {
-    case football, hurling, ladiesFootball, camogie
+    case football = "Football"
+    case hurling = "Hurling"
+    case ladiesFootball = "Ladies Football"
+    case camogie = "Camogie"
 }
 
 enum EventType: String, Codable {
