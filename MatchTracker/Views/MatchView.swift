@@ -21,15 +21,11 @@ struct MatchView: View {
     var body: some View {
         // Simple empty view with navigation title
         VStack {
-            Text("Match View")
-                .font(.title)
-                .padding()
             MatchTimerView(match: match)
-
             
             Spacer()
         }
-        .navigationTitle("Match")
+        //.navigationTitle("Match")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: EditMatchView(match: match)) {
