@@ -27,55 +27,54 @@ struct MatchTimerView: View {
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
+    private var isPauseButtonEnabled: Bool {
+        return isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil
+    }
+    
     var body: some View {
         VStack {
-            Text(match.matchPeriod.rawValue)
-                .font(.headline)
-            
-            Text(formattedTime)
-                .font(.largeTitle)
-                .onReceive(timer) { _ in
-                    // Force view refresh by toggling state
-                    refreshTrigger.toggle()
-                    // Update match elapsed time
-                    match.elapsedTime = elapsedTime
-                    
-                    // Debug output
-                    print("Timer tick: \(formattedTime), Running: \(timerIsRunning)")
-                }
-            
-            // Added current state indicator for debugging
-            Text(timerIsRunning ? "Running" : "Stopped")
-                .font(.caption)
-                .foregroundColor(timerIsRunning ? .green : .red)
-            
             HStack {
+                Spacer()
                 Button(action: startStopTimer) {
                     Text(startStopButtonText())
-                        .frame(width: 120, height: 40)
+                        .frame(width: 85, height: 40)
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                
-                if isPlayPeriod(match.matchPeriod) {
-                    Button(action: pauseResumeTimer) {
-                        Image(systemName: timerIsRunning ? "pause.fill" : "play.fill")
-                            .font(.title2)
-                            .frame(width: 50, height: 40)
-                            .background(Color.orange)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                Spacer()
+                VStack {
+                    Text(match.matchPeriod.rawValue)
+                        .font(.headline)
+                    
+                    Text(formattedTime)
+                        .font(.largeTitle.monospacedDigit())
+                        .onReceive(timer) { _ in
+                            // Force view refresh by toggling state
+                            refreshTrigger.toggle()
+                            // Update match elapsed time
+                            match.elapsedTime = elapsedTime
                     }
                 }
-                
-                Button(action: resetTimer) {
-                    Text("Reset")
-                        .frame(width: 100, height: 40)
-                        .background(Color.red)
-                        .foregroundColor(.white)
+                Spacer()
+                Button(action: pauseResumeTimer) {
+                    Image(systemName: timerIsRunning ? "pause.fill" : "play.fill")
+                        .font(.title2)
+                        .frame(width: 85, height: 40)
+                        .background(isPauseButtonEnabled ? Color.orange : Color.orange.opacity(0.3))
+                        .foregroundColor(isPauseButtonEnabled ? .white : .white.opacity(0.6))
                         .cornerRadius(10)
                 }
+                .disabled(!isPauseButtonEnabled)
+                Spacer()
+            }
+
+            Button(action: resetTimer) {
+                Text("Reset")
+                    .frame(width: 100, height: 40)
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
             }
         }
         .onAppear {
