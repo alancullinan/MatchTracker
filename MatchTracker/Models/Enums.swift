@@ -31,7 +31,7 @@ enum EventType: String, Codable {
 }
 
 enum ShotOutcome: String, Codable {
-    case score, wide, saved, droppedShort, offPost
+    case goal, point, twoPointer, wide, saved, droppedShort, offPost
 }
 
 enum ShotType: String, Codable {

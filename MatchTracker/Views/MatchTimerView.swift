@@ -31,51 +31,57 @@ struct MatchTimerView: View {
         return isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil
     }
     
+    private var isMatchOver: Bool {
+        return match.matchPeriod == .matchOver
+    }
+    
     var body: some View {
         VStack {
+            Text(match.matchPeriod.rawValue)
+                .font(.headline)
+                .padding(-10.0)
+                
             HStack {
                 Spacer()
+                
                 Button(action: startStopTimer) {
                     Text(startStopButtonText())
-                        .frame(width: 85, height: 40)
-                        .background(Color.blue)
+                        .frame(width: 60, height: 50)
+                        .background(isMatchOver ? Color.gray : Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                .disabled(isMatchOver)
+                
                 Spacer()
-                VStack {
-                    Text(match.matchPeriod.rawValue)
-                        .font(.headline)
-                    
-                    Text(formattedTime)
-                        .font(.largeTitle.monospacedDigit())
-                        .onReceive(timer) { _ in
-                            // Force view refresh by toggling state
-                            refreshTrigger.toggle()
-                            // Update match elapsed time
-                            match.elapsedTime = elapsedTime
-                    }
+            
+                Text(formattedTime)
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                    .monospacedDigit()
+                    .onReceive(timer) { _ in
+                        // Force view refresh by toggling state
+                        refreshTrigger.toggle()
+                        // Update match elapsed time
+                        match.elapsedTime = elapsedTime
                 }
+                
                 Spacer()
+                
                 Button(action: pauseResumeTimer) {
                     Image(systemName: timerIsRunning ? "pause.fill" : "play.fill")
                         .font(.title2)
-                        .frame(width: 85, height: 40)
-                        .background(isPauseButtonEnabled ? Color.orange : Color.orange.opacity(0.3))
-                        .foregroundColor(isPauseButtonEnabled ? .white : .white.opacity(0.6))
+                        .frame(width: 60, height: 50)
+                        .background(isPauseButtonEnabled ? Color.orange : Color.orange.opacity(0.2))
+                        .foregroundColor(isPauseButtonEnabled ? .white : .white.opacity(0.2))
                         .cornerRadius(10)
                 }
                 .disabled(!isPauseButtonEnabled)
+                
                 Spacer()
             }
 
-            Button(action: resetTimer) {
-                Text("Reset")
-                    .frame(width: 100, height: 40)
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
+            // Reset button removed
         }
         .onAppear {
             print("MatchTimerView appeared")
@@ -111,10 +117,12 @@ struct MatchTimerView: View {
     }
     
     private func startStopButtonText() -> String {
-        if isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil {
-            return "End Half"
+        if match.matchPeriod == .matchOver {
+            return "Match\nOver"
+        } else if isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil {
+            return "End\nHalf"
         } else {
-            return "Start Half"
+            return "Start\nHalf"
         }
     }
     
@@ -132,6 +140,14 @@ struct MatchTimerView: View {
             
             // Store elapsed time in match
             match.elapsedTime = elapsedTime
+            
+            // Create period end event
+            let periodEndEvent = Event(
+                type: .periodEnd,
+                period: match.matchPeriod,
+                timeElapsed: elapsedTime
+            )
+            match.events.append(periodEndEvent)
             
             // Update match state
             match.isPaused = true
@@ -151,16 +167,24 @@ struct MatchTimerView: View {
             timerStartedTime = Date()
             timerIsRunning = true
             
-            // Update match state
-            match.currentPeriodStart = Date()
-            match.isPaused = false
-            match.elapsedTime = 0
-            
-            // Move to next period
+            // Move to next period first
             if let currentIndex = MatchPeriod.allCases.firstIndex(of: match.matchPeriod),
                currentIndex + 1 < MatchPeriod.allCases.count {
                 match.matchPeriod = MatchPeriod.allCases[currentIndex + 1]
             }
+            
+            // Create period start event
+            let periodStartEvent = Event(
+                type: .periodStart,
+                period: match.matchPeriod,
+                timeElapsed: 0
+            )
+            match.events.append(periodStartEvent)
+            
+            // Update match state
+            match.currentPeriodStart = Date()
+            match.isPaused = false
+            match.elapsedTime = 0
             
             print("Period started: \(match.matchPeriod.rawValue)")
         }
