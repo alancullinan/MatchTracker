@@ -238,7 +238,11 @@ struct EventRow: View {
     // Helper to get color for shot outcome
     private func colorForShotOutcome(_ outcome: ShotOutcome) -> Color {
         switch outcome {
-        case .score:
+        case .goal:
+            return .green
+        case .point:
+            return .green
+        case .twoPointer:
             return .green
         case .wide:
             return .red

@@ -22,6 +22,11 @@ struct MatchView: View {
         VStack {
             // Timer view
             MatchTimerView(match: match)
+                .padding(.bottom, 10)
+            
+            // Score view for team 1 to test
+            TeamScoringView(match: match, team: match.team1)
+                .padding(.horizontal)
             
             Spacer()
             
@@ -53,5 +58,62 @@ struct MatchView: View {
         .sheet(isPresented: $showingEventList) {
             EventListView(match: match)
         }
+    }
+}
+
+
+// Add this at the bottom of MatchView.swift
+#Preview {
+    // Create a sample match with teams and some events for preview
+    let match = Match()
+    match.competition = "County Championship"
+    match.matchPeriod = .firstHalf
+    match.currentPeriodStart = Date()
+    
+    // Create teams
+    let homeTeam = Team(name: "Dublin")
+    let awayTeam = Team(name: "Kerry")
+    match.team1 = homeTeam
+    match.team2 = awayTeam
+    
+    // Add some sample events
+    let periodStartEvent = Event(
+        type: .periodStart,
+        period: .firstHalf,
+        timeElapsed: 0
+    )
+    
+    let homeGoal = Event(
+        type: .shot,
+        period: .firstHalf,
+        timeElapsed: 180,
+        team: homeTeam,
+        shotOutcome: .goal,
+        shotType: .fromPlay
+    )
+    
+    let homePoint = Event(
+        type: .shot,
+        period: .firstHalf,
+        timeElapsed: 360,
+        team: homeTeam,
+        shotOutcome: .point,
+        shotType: .fromPlay
+    )
+    
+    let awayPoint = Event(
+        type: .shot,
+        period: .firstHalf,
+        timeElapsed: 540,
+        team: awayTeam,
+        shotOutcome: .point,
+        shotType: .fromPlay
+    )
+    
+    match.events = [periodStartEvent, homeGoal, homePoint, awayPoint]
+    
+    // Return the view with the sample match
+    return NavigationView {
+        MatchView(match: match)
     }
 }
