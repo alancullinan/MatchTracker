@@ -1,10 +1,4 @@
-//
-//  MatchView.swift
-//  MatchTracker
-//
-//  Created on 28/02/2025.
-//
-
+// Updated MatchView.swift
 import SwiftUI
 import SwiftData
 
@@ -24,9 +18,17 @@ struct MatchView: View {
             MatchTimerView(match: match)
                 .padding(.bottom, 10)
             
-            // Score view for team 1 to test
-            TeamScoringView(match: match, team: match.team1)
-                .padding(.horizontal)
+            ScrollView {
+                // Team 1 scoring view
+                TeamScoringView(match: match, team: match.team1)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                
+                // Team 2 scoring view
+                TeamScoringView(match: match, team: match.team2)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+            }
             
             Spacer()
             
@@ -47,7 +49,6 @@ struct MatchView: View {
             }
             .padding(.bottom)
         }
-        //.navigationTitle(match.competition.isEmpty ? "Match" : match.competition)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: EditMatchView(match: match)) {
