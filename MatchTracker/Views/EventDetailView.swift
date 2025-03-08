@@ -1,11 +1,12 @@
 import SwiftUI
+import SwiftData
 
 struct EventDetailView: View {
     @Bindable var match: Match
     let team: Team
     let eventType: EventType
-    @Binding var isPresented: Bool
-    var onDismiss: () -> Void
+    var onSave: () -> Void
+    var onCancel: () -> Void
     
     // Fields for different event types
     @State private var foulOutcome: FoulOutcome = .free
@@ -16,54 +17,52 @@ struct EventDetailView: View {
     @State private var player2Selection: Player? = nil
     
     var body: some View {
-        NavigationView {
-            Form {
-                // Common information
-                Section(header: Text("Basic Information")) {
-                    Text("Team: \(team.name)")
-                    Text("Time: \(formatTime(match.elapsedTime))")
-                    Text("Period: \(match.matchPeriod.rawValue)")
-                }
-                
-                // Event-specific fields
-                switch eventType {
-                case .foulConceded:
-                    foulSection
-                case .card:
-                    cardSection
-                case .kickout:
-                    kickoutSection
-                case .substitution:
-                    substitutionSection
-                case .note:
-                    noteSection
-                default:
-                    EmptyView()
-                }
-                
-                // Notes section available for all event types
-                if eventType != .note {
-                    Section(header: Text("Additional Notes")) {
-                        TextField("Optional notes", text: $noteText, axis: .vertical)
-                            .lineLimit(3...5)
-                    }
-                }
-                
-                // Save button
-                Section {
-                    Button("Save Event") {
-                        saveEvent()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.blue)
+        Form {
+            // Common information
+            Section(header: Text("Basic Information")) {
+                Text("Team: \(team.name)")
+                Text("Time: \(formatTime(match.elapsedTime))")
+                Text("Period: \(match.matchPeriod.rawValue)")
+            }
+            
+            // Event-specific fields
+            switch eventType {
+            case .foulConceded:
+                foulSection
+            case .card:
+                cardSection
+            case .kickout:
+                kickoutSection
+            case .substitution:
+                substitutionSection
+            case .note:
+                noteSection
+            default:
+                EmptyView()
+            }
+            
+            // Notes section available for all event types
+            if eventType != .note {
+                Section(header: Text("Additional Notes")) {
+                    TextField("Optional notes", text: $noteText, axis: .vertical)
+                        .lineLimit(3...5)
                 }
             }
-            .navigationTitle(eventTitle)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        isPresented = false
-                    }
+            
+            // Save button
+            Section {
+                Button("Save Event") {
+                    saveEvent()
+                }
+                .frame(maxWidth: .infinity)
+                .foregroundColor(.blue)
+            }
+        }
+        .navigationTitle(eventTitle)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    onCancel()
                 }
             }
         }
@@ -184,7 +183,6 @@ struct EventDetailView: View {
         )
         
         match.events.append(event)
-        isPresented = false
-        onDismiss()
+        onSave()
     }
 }

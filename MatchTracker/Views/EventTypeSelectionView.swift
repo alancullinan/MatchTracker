@@ -1,10 +1,3 @@
-//
-//  EventTypeSelectionView.swift
-//  MatchTracker
-//
-//  Created by Alan Cullinan on 08/03/2025.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -15,21 +8,25 @@ struct EventTypeSelectionView: View {
     
     // For navigating to the detail view
     @State private var selectedEventType: EventType? = nil
-    @State private var showEventDetail = false
+    @State private var navigationPath = NavigationPath()
     
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $navigationPath) {
             List {
                 Section(header: Text("Select Event Type")) {
                     // Score events already have dedicated buttons, so exclude them
-                    Button(action: { selectEventType(.foulConceded) }) {
+                    Button(action: {
+                        navigationPath.append(EventType.foulConceded)
+                    }) {
                         HStack {
                             Image(systemName: "exclamationmark.triangle")
                             Text("Foul")
                         }
                     }
                     
-                    Button(action: { selectEventType(.card) }) {
+                    Button(action: {
+                        navigationPath.append(EventType.card)
+                    }) {
                         HStack {
                             Image(systemName: "rectangle.fill")
                                 .foregroundColor(.yellow)
@@ -37,21 +34,27 @@ struct EventTypeSelectionView: View {
                         }
                     }
                     
-                    Button(action: { selectEventType(.kickout) }) {
+                    Button(action: {
+                        navigationPath.append(EventType.kickout)
+                    }) {
                         HStack {
                             Image(systemName: "arrow.up.forward")
                             Text("Kickout")
                         }
                     }
                     
-                    Button(action: { selectEventType(.substitution) }) {
+                    Button(action: {
+                        navigationPath.append(EventType.substitution)
+                    }) {
                         HStack {
                             Image(systemName: "arrow.left.arrow.right")
                             Text("Substitution")
                         }
                     }
                     
-                    Button(action: { selectEventType(.note) }) {
+                    Button(action: {
+                        navigationPath.append(EventType.note)
+                    }) {
                         HStack {
                             Image(systemName: "note.text")
                             Text("General Note")
@@ -60,6 +63,19 @@ struct EventTypeSelectionView: View {
                 }
             }
             .navigationTitle("Record Event")
+            .navigationDestination(for: EventType.self) { eventType in
+                EventDetailView(
+                    match: match,
+                    team: team,
+                    eventType: eventType,
+                    onSave: {
+                        isPresented = false
+                    },
+                    onCancel: {
+                        navigationPath.removeLast()
+                    }
+                )
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -68,21 +84,5 @@ struct EventTypeSelectionView: View {
                 }
             }
         }
-        .sheet(isPresented: $showEventDetail) {
-            if let type = selectedEventType {
-                EventDetailView(
-                    match: match,
-                    team: team,
-                    eventType: type,
-                    isPresented: $showEventDetail,
-                    onDismiss: { isPresented = false }
-                )
-            }
-        }
-    }
-    
-    private func selectEventType(_ type: EventType) {
-        selectedEventType = type
-        showEventDetail = true
     }
 }
