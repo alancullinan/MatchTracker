@@ -1,10 +1,10 @@
-// Simple TeamScoreView.swift
 import SwiftUI
 import SwiftData
 
 struct TeamScoringView: View {
     @Bindable var match: Match
     let team: Team
+    @State private var showEventTypeSelection = false
     
     var body: some View {
         VStack(spacing: 8) {
@@ -51,10 +51,32 @@ struct TeamScoringView: View {
                     .disabled(!match.matchPeriod.isPlayPeriod)
                 }
             }
+            
+            Divider()
+                .padding(.vertical, 8)
+            
+            // Other events button
+            Button(action: {
+                showEventTypeSelection = true
+            }) {
+                HStack {
+                    Image(systemName: "plus.circle")
+                    Text("Record Event")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+            }
+            .disabled(!match.matchPeriod.isPlayPeriod)
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(12)
+        .sheet(isPresented: $showEventTypeSelection) {
+            EventTypeSelectionView(match: match, team: team, isPresented: $showEventTypeSelection)
+        }
     }
     
     // Traditional GAA score format: goals-points (total)
