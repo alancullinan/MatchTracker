@@ -28,7 +28,7 @@ struct MatchTimerView: View {
     }
     
     private var isPauseButtonEnabled: Bool {
-        return isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil
+        return match.matchPeriod.isPlayPeriod && match.currentPeriodStart != nil
     }
     
     private var isMatchOver: Bool {
@@ -97,7 +97,7 @@ struct MatchTimerView: View {
         print("Initializing from match: Period \(match.matchPeriod.rawValue), Paused: \(match.isPaused), ElapsedTime: \(match.elapsedTime)")
         
         // If period is active and not paused, start the timer
-        if isPlayPeriod(match.matchPeriod) && !match.isPaused && match.currentPeriodStart != nil {
+        if match.matchPeriod.isPlayPeriod && !match.isPaused && match.currentPeriodStart != nil {
             accumulatedTime = TimeInterval(match.elapsedTime)
             timerStartedTime = Date()
             timerIsRunning = true
@@ -119,7 +119,7 @@ struct MatchTimerView: View {
     private func startStopButtonText() -> String {
         if match.matchPeriod == .matchOver {
             return "Match\nOver"
-        } else if isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil {
+        } else if match.matchPeriod.isPlayPeriod && match.currentPeriodStart != nil {
             return "End\nHalf"
         } else {
             return "Start\nHalf"
@@ -127,7 +127,7 @@ struct MatchTimerView: View {
     }
     
     private func startStopTimer() {
-        if isPlayPeriod(match.matchPeriod) && match.currentPeriodStart != nil {
+        if match.matchPeriod.isPlayPeriod && match.currentPeriodStart != nil {
             // End current period
             if timerIsRunning {
                 // Update accumulated time
@@ -229,11 +229,6 @@ struct MatchTimerView: View {
         match.isPaused = true
         
         print("Timer reset")
-    }
-    
-    private func isPlayPeriod(_ period: MatchPeriod) -> Bool {
-        return period == .firstHalf || period == .secondHalf ||
-               period == .extraTimeFirstHalf || period == .extraTimeSecondHalf
     }
 }
 

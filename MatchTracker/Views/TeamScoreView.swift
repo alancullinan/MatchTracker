@@ -1,9 +1,4 @@
-//
-//  TeamScoreView.swift
-//  MatchTracker
-//
-//  Created by Alan Cullinan on 06/03/2025.
-
+// Simple TeamScoreView.swift
 import SwiftUI
 import SwiftData
 
@@ -12,7 +7,7 @@ struct TeamScoringView: View {
     let team: Team
     
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             // Team name
             Text(team.name.isEmpty ? "Team" : team.name)
                 .font(.headline)
@@ -22,53 +17,38 @@ struct TeamScoringView: View {
             Text(scoreDisplay)
                 .font(.system(size: 32, weight: .bold, design: .rounded))
             
-            // Scoring buttons
-            HStack(spacing: 8) {
+            // Simple scoring buttons row
+            HStack(spacing: 10) {
                 // Goal button
                 Button(action: { recordScore(outcome: .goal) }) {
-                    VStack {
-                        Text("G")
-                            .font(.headline)
-                        Text("3 pts")
-                            .font(.caption)
-                    }
-                    .frame(width: 50, height: 50)
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
+                    Text("Goal")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(Color.secondary.opacity(0.2))
+                        .cornerRadius(8)
                 }
-                .disabled(!isPlayPeriod(match.matchPeriod))
+                .disabled(!match.matchPeriod.isPlayPeriod)
                 
                 // Point button
                 Button(action: { recordScore(outcome: .point) }) {
-                    VStack {
-                        Text("P")
-                            .font(.headline)
-                        Text("1 pt")
-                            .font(.caption)
-                    }
-                    .frame(width: 50, height: 50)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
+                    Text("Point")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(Color.secondary.opacity(0.2))
+                        .cornerRadius(8)
                 }
-                .disabled(!isPlayPeriod(match.matchPeriod))
+                .disabled(!match.matchPeriod.isPlayPeriod)
                 
                 // Two-point button (only for football)
                 if match.matchType == .football {
                     Button(action: { recordScore(outcome: .twoPointer) }) {
-                        VStack {
-                            Text("2P")
-                                .font(.headline)
-                            Text("2 pts")
-                                .font(.caption)
-                        }
-                        .frame(width: 50, height: 50)
-                        .background(Color.purple)
-                        .foregroundColor(.white)
-                        .clipShape(Circle())
+                        Text("2 Point")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(Color.secondary.opacity(0.2))
+                            .cornerRadius(8)
                     }
-                    .disabled(!isPlayPeriod(match.matchPeriod))
+                    .disabled(!match.matchPeriod.isPlayPeriod)
                 }
             }
         }
@@ -121,16 +101,11 @@ struct TeamScoringView: View {
         }.count
         
         // Calculate total points (regular points + two-pointers)
-        let totalPoints = regularPoints + (twoPointScores * 2)
+        let pointsCount = regularPoints + twoPointScores
         
         // Calculate total score value (goals worth 3 each)
-        let totalScore = (goals * 3) + totalPoints
+        let totalScore = (goals * 3) + regularPoints + (twoPointScores * 2)
         
-        return (goals, regularPoints + twoPointScores, totalScore)
-    }
-    
-    private func isPlayPeriod(_ period: MatchPeriod) -> Bool {
-        return period == .firstHalf || period == .secondHalf ||
-               period == .extraTimeFirstHalf || period == .extraTimeSecondHalf
+        return (goals, pointsCount, totalScore)
     }
 }

@@ -67,7 +67,7 @@ struct EventListView: View {
     }
 }
 
-// A row to display a single event
+// EventRow in EventListView.swift
 struct EventRow: View {
     let event: Event
     
@@ -77,52 +77,29 @@ struct EventRow: View {
                 // Display the time in MM:SS format
                 Text(formatTime(event.timeElapsed))
                     .font(.headline)
-                    .foregroundColor(.primary)
                     .frame(width: 60, alignment: .leading)
                 
-                // Display the period with a colored capsule background
+                // Display the period
                 Text(event.period.rawValue)
                     .font(.caption)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(periodColor(event.period))
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
                 
                 Spacer()
                 
-                // Event type label with appropriate icon
-                HStack(spacing: 4) {
-                    Image(systemName: iconForEventType(event.type))
-                    Text(formatEventType(event.type))
-                }
-                .font(.subheadline)
-                .foregroundColor(colorForEventType(event.type))
+                // Event description (based on type and outcome)
+                Text(displayTextForEvent(event))
+                    .font(.subheadline)
             }
             
-            // Second row with team and details
+            // Show team name if available
             if let team = event.team {
-                HStack {
-                    Text(team.name)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    
-                    if event.type == .shot, let outcome = event.shotOutcome {
-                        Spacer()
-                        Text(outcome.rawValue)
-                            .font(.caption)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(colorForShotOutcome(outcome))
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-                }
+                Text(team.name)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             }
             
-            // Shot type if applicable
-            if event.type == .shot, let shotType = event.shotType {
-                Text(shotType.rawValue)
+            // Show shot type if applicable
+            if let shotType = event.shotType, event.type == .shot {
+                Text(formatShotType(shotType))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -132,7 +109,6 @@ struct EventRow: View {
                 Text(notes)
                     .font(.caption)
                     .foregroundColor(.secondary)
-                    .padding(.top, 2)
             }
         }
         .padding(.vertical, 6)
@@ -145,113 +121,69 @@ struct EventRow: View {
         return String(format: "%02d:%02d", minutes, remainingSeconds)
     }
     
-    // Helper to format event type for display
-    private func formatEventType(_ type: EventType) -> String {
-        switch type {
+    // Helper to get the display text for an event
+    private func displayTextForEvent(_ event: Event) -> String {
+        // For shot events, display based on outcome
+        if event.type == .shot, let outcome = event.shotOutcome {
+            switch outcome {
+            case .goal:
+                return "Goal"
+            case .point:
+                return "Point"
+            case .twoPointer:
+                return "2 Point"
+            case .wide:
+                return "Wide"
+            case .saved:
+                return "Saved"
+            case .droppedShort:
+                return "Short"
+            case .offPost:
+                return "Off Post"
+            }
+        }
+        
+        // For other event types
+        switch event.type {
         case .periodStart:
             return "Period Start"
         case .periodEnd:
             return "Period End"
-        case .shot:
-            return "Shot"
         case .substitution:
-            return "Sub"
+            return "Substitution"
         case .kickout:
             return "Kickout"
         case .card:
+            if let cardType = event.cardType {
+                return "\(cardType.rawValue.capitalized) Card"
+            }
             return "Card"
         case .foulConceded:
             return "Foul"
         case .note:
             return "Note"
+        default:
+            return event.type.rawValue.capitalized
         }
     }
     
-    // Helper to get icon for event type
-    private func iconForEventType(_ type: EventType) -> String {
+    // Helper to format shot type
+    private func formatShotType(_ type: ShotType) -> String {
         switch type {
-        case .periodStart:
-            return "play.circle"
-        case .periodEnd:
-            return "stop.circle"
-        case .shot:
-            return "target"
-        case .substitution:
-            return "arrow.left.arrow.right"
-        case .kickout:
-            return "sportscourt"
-        case .card:
-            return "rectangle.fill"
-        case .foulConceded:
-            return "exclamationmark.triangle"
-        case .note:
-            return "note.text"
-        }
-    }
-    
-    // Helper to get color for event type
-    private func colorForEventType(_ type: EventType) -> Color {
-        switch type {
-        case .periodStart:
-            return .green
-        case .periodEnd:
-            return .orange
-        case .shot:
-            return .blue
-        case .substitution:
-            return .purple
-        case .kickout:
-            return .teal
-        case .card:
-            return .yellow
-        case .foulConceded:
-            return .red
-        case .note:
-            return .gray
-        }
-    }
-    
-    // Helper to get color for period
-    private func periodColor(_ period: MatchPeriod) -> Color {
-        switch period {
-        case .notStarted:
-            return .gray
-        case .firstHalf:
-            return .blue
-        case .halfTime:
-            return .orange
-        case .secondHalf:
-            return .green
-        case .fullTime:
-            return .purple
-        case .extraTimeFirstHalf:
-            return .pink
-        case .extraTimeHalfTime:
-            return .orange
-        case .extraTimeSecondHalf:
-            return .indigo
-        case .matchOver:
-            return .gray
-        }
-    }
-    
-    // Helper to get color for shot outcome
-    private func colorForShotOutcome(_ outcome: ShotOutcome) -> Color {
-        switch outcome {
-        case .goal:
-            return .green
-        case .point:
-            return .green
-        case .twoPointer:
-            return .green
-        case .wide:
-            return .red
-        case .saved:
-            return .orange
-        case .droppedShort:
-            return .yellow
-        case .offPost:
-            return .purple
+        case .fromPlay:
+            return "From Play"
+        case .free:
+            return "Free"
+        case .penalty:
+            return "Penalty"
+        case .fortyFive:
+            return "45m"
+        case .sixtyFive:
+            return "65m"
+        case .sideline:
+            return "Sideline"
+        case .mark:
+            return "Mark"
         }
     }
 }

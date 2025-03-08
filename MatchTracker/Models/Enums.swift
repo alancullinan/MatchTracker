@@ -19,6 +19,28 @@ enum MatchPeriod: String, Codable, CaseIterable {
     case matchOver = "Match Over"
 }
 
+// Extension for MatchPeriod functionality
+extension MatchPeriod {
+    // Returns true if this is an active play period
+    var isPlayPeriod: Bool {
+        switch self {
+        case .firstHalf, .secondHalf, .extraTimeFirstHalf, .extraTimeSecondHalf:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    // Other useful properties
+    var isHalfTime: Bool {
+        return self == .halfTime || self == .extraTimeHalfTime
+    }
+    
+    var isGameOver: Bool {
+        return self == .fullTime || self == .matchOver
+    }
+}
+
 enum MatchType: String, Codable, CaseIterable {
     case football = "Football"
     case hurling = "Hurling"
