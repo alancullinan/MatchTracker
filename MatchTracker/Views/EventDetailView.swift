@@ -93,7 +93,7 @@ struct EventDetailView: View {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
                     ForEach(team.players, id: \.id) { player in
-                        Text("\(player.jerseyNumber). \(player.name)").tag(player as Player?)
+                        Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
             }
@@ -113,7 +113,7 @@ struct EventDetailView: View {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
                     ForEach(team.players, id: \.id) { player in
-                        Text("\(player.jerseyNumber). \(player.name)").tag(player as Player?)
+                        Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
             }
@@ -139,14 +139,14 @@ struct EventDetailView: View {
                 Picker("Player Coming Off", selection: $player1Selection) {
                     Text("Select Player").tag(nil as Player?)
                     ForEach(team.players, id: \.id) { player in
-                        Text("\(player.jerseyNumber). \(player.name)").tag(player as Player?)
+                        Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
                 
                 Picker("Player Coming On", selection: $player2Selection) {
                     Text("Select Player").tag(nil as Player?)
                     ForEach(team.players, id: \.id) { player in
-                        Text("\(player.jerseyNumber). \(player.name)").tag(player as Player?)
+                        Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
             }

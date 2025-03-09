@@ -18,4 +18,22 @@ class Team {
         self.id = UUID()
         self.name = name
     }
+    
+    // Add this method to your Team class in TeamModel.swift
+    func initializeWithNumberedPlayers() {
+        // Clear existing players first (if any)
+        players.removeAll()
+        
+        // Add players with numbers 1-30
+        for number in 1...30 {
+            let player = Player(
+                name: "No.\(number)",
+                jerseyNumber: number,
+                position: ""
+            )
+            players.append(player)
+        }
+    }
 }
+
+

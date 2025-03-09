@@ -22,3 +22,4 @@ class Player {
         self.position = position
     }
 }
+

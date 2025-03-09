@@ -1,4 +1,3 @@
-// Updated MatchView.swift
 import SwiftUI
 import SwiftData
 
@@ -8,6 +7,8 @@ struct MatchView: View {
     
     // State to control navigation to edit view and event list
     @State private var showingEventList = false
+    @State private var showingTeam1Players = false
+    @State private var showingTeam2Players = false
     
     // Used to navigate back programmatically if needed
     @Environment(\.dismiss) private var dismiss
@@ -19,15 +20,37 @@ struct MatchView: View {
                 .padding(.bottom, 10)
             
             ScrollView {
-                // Team 1 scoring view
-                TeamScoringView(match: match, team: match.team1)
+                // Team 1 scoring view and manage button
+                VStack(spacing: 0) {
+                    TeamScoringView(match: match, team: match.team1)
+                    
+                    Button("Manage \(match.team1.name) Players") {
+                        showingTeam1Players = true
+                    }
                     .padding(.horizontal)
-                    .padding(.bottom, 8)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.secondary.opacity(0.1))
+                    .cornerRadius(8)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 16)
                 
-                // Team 2 scoring view
-                TeamScoringView(match: match, team: match.team2)
+                // Team 2 scoring view and manage button
+                VStack(spacing: 0) {
+                    TeamScoringView(match: match, team: match.team2)
+                    
+                    Button("Manage \(match.team2.name) Players") {
+                        showingTeam2Players = true
+                    }
                     .padding(.horizontal)
-                    .padding(.bottom, 8)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.secondary.opacity(0.1))
+                    .cornerRadius(8)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
             }
             
             Spacer()
@@ -59,9 +82,14 @@ struct MatchView: View {
         .sheet(isPresented: $showingEventList) {
             EventListView(match: match)
         }
+        .sheet(isPresented: $showingTeam1Players) {
+            PlayerManagementView(team: match.team1)
+        }
+        .sheet(isPresented: $showingTeam2Players) {
+            PlayerManagementView(team: match.team2)
+        }
     }
 }
-
 
 // Add this at the bottom of MatchView.swift
 #Preview {

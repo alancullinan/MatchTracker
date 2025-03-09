@@ -33,6 +33,11 @@ struct NewMatchView: View {
                     
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Add") {
+                            // Initialize numbered players for both teams
+                            match.team1.initializeWithNumberedPlayers()
+                            match.team2.initializeWithNumberedPlayers()
+                            
+                            // Insert the match
                             context.insert(match)
                             isPresented = false
                         }

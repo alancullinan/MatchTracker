@@ -97,6 +97,21 @@ struct EventRow: View {
                     .foregroundColor(.secondary)
             }
             
+            // In EventRow in EventListView.swift, add this after the team display
+            // Show player 1 if available
+            if let player = event.player1 {
+                Text("#\(player.jerseyNumber) \(player.name)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // Show player 2 if available (for substitutions)
+            if let player = event.player2 {
+                Text("for #\(player.jerseyNumber) \(player.name)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
             // Show shot type if applicable
             if let shotType = event.shotType, event.type == .shot {
                 Text(formatShotType(shotType))
