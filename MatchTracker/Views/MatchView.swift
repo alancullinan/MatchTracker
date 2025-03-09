@@ -78,6 +78,20 @@ struct MatchView: View {
                     Text("Edit")
                 }
             }
+            
+            ToolbarItem(placement: .navigationBarLeading) {
+                Menu {
+                    NavigationLink(destination: PlayerManagementView(team: match.team1)) {
+                        Text("Manage \(match.team1.name) Players")
+                    }
+                    
+                    NavigationLink(destination: PlayerManagementView(team: match.team2)) {
+                        Text("Manage \(match.team2.name) Players")
+                    }
+                } label: {
+                    Label("Manage Players", systemImage: "person.2")
+                }
+            }
         }
         .sheet(isPresented: $showingEventList) {
             EventListView(match: match)
