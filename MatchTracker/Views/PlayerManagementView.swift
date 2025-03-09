@@ -8,7 +8,8 @@ struct PlayerManagementView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(team.players) { player in
+                // Use a sorted array of players instead of direct access
+                ForEach(sortedPlayers) { player in
                     PlayerRow(player: player)
                 }
             }
@@ -21,5 +22,10 @@ struct PlayerManagementView: View {
                 }
             }
         }
+    }
+    
+    // Computed property to sort players by jersey number
+    private var sortedPlayers: [Player] {
+        team.players.sorted { $0.jerseyNumber < $1.jerseyNumber }
     }
 }
