@@ -9,6 +9,8 @@ struct EventDetailView: View {
     var onCancel: () -> Void
     
     // Fields for different event types
+    @State private var shotOutcome: ShotOutcome = .wide
+    @State private var shotType: ShotType = .fromPlay
     @State private var foulOutcome: FoulOutcome = .free
     @State private var cardType: CardType = .yellow
     @State private var wonOwnKickout: Bool = true
@@ -27,6 +29,8 @@ struct EventDetailView: View {
             
             // Event-specific fields
             switch eventType {
+            case .shot:
+                shotSection
             case .foulConceded:
                 foulSection
             case .card:
@@ -80,6 +84,38 @@ struct EventDetailView: View {
     }
     
     // MARK: - Event Type Sections
+    
+    private var shotSection: some View {
+        Section(header: Text("Shot Details")) {
+            Picker("Outcome", selection: $shotOutcome) {
+                Text("Wide").tag(ShotOutcome.wide)
+                Text("Saved").tag(ShotOutcome.saved)
+                Text("Dropped Short").tag(ShotOutcome.droppedShort)
+                Text("Hit Post").tag(ShotOutcome.offPost)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            
+            Picker("Shot Type", selection: $shotType) {
+                Text("From Play").tag(ShotType.fromPlay)
+                Text("Free").tag(ShotType.free)
+                Text("Penalty").tag(ShotType.penalty)
+                Text("45m/65m").tag(ShotType.fortyFive)
+                Text("Sideline").tag(ShotType.sideline)
+                if match.matchType == .football || match.matchType == .ladiesFootball {
+                    Text("Mark").tag(ShotType.mark)
+                }
+            }
+            
+            if !team.players.isEmpty {
+                Picker("Player", selection: $player1Selection) {
+                    Text("Not Specified").tag(nil as Player?)
+                    ForEach(team.players.sorted(by: { $0.jerseyNumber < $1.jerseyNumber }), id: \.id) { player in
+                        Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
+                    }
+                }
+            }
+        }
+    }
     
     private var foulSection: some View {
         Section(header: Text("Foul Details")) {
@@ -176,6 +212,8 @@ struct EventDetailView: View {
             player1: player1Selection,
             player2: player2Selection,
             team: team,
+            shotOutcome: eventType == .shot ? shotOutcome : nil,
+            shotType: eventType == .shot ? shotType : nil,
             foulOutcome: eventType == .foulConceded ? foulOutcome : nil,
             cardType: eventType == .card ? cardType : nil,
             wonOwnKickout: eventType == .kickout ? wonOwnKickout : nil,

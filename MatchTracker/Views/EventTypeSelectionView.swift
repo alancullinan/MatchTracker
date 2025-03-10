@@ -15,6 +15,16 @@ struct EventTypeSelectionView: View {
             List {
                 Section(header: Text("Select Event Type")) {
                     // Score events already have dedicated buttons, so exclude them
+                    // In EventTypeSelectionView.swift, add a new button to the list
+                    Button(action: {
+                        navigationPath.append(EventType.shot)  // Use the existing shot type
+                    }) {
+                        HStack {
+                            Image(systemName: "x.circle")
+                                .foregroundColor(.red)
+                            Text("Missed Shot")
+                        }
+                    }
                     Button(action: {
                         navigationPath.append(EventType.foulConceded)
                     }) {
