@@ -37,39 +37,47 @@ struct MatchView: View {
                     Label("Settings", systemImage: "gearshape")
                 }
         }
-        .navigationTitle(match.competition.isEmpty ? "Match" : match.competition)
-                .navigationBarTitleDisplayMode(.inline) // This makes the title centered and smaller
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            HStack {
-                                Image(systemName: "list.bullet")
-                                Text("Matches")
-                            }
-                        }
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline) // This makes the title centered and smaller
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: "list.bullet")
+                        Text("Matches")
                     }
                 }
             }
+        }
+    }
+    
     
     // Move your current MatchView content into this computed property
     private var mainMatchContent: some View {
         VStack {
-            // Timer view
-            MatchTimerView(match: match)
-                .padding(.bottom, 10)
-            
-            ScrollView {
-                // Team 1 scoring view
-                TeamScoringView(match: match, team: match.team1)
-                    .padding(.horizontal)
-                    .padding(.bottom, 16)
+            // Competition title
+            if !match.competition.isEmpty {
+                Text(match.competition)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .padding(.top, 4)
+                // Timer view
+                MatchTimerView(match: match)
+                    .padding(.bottom, 10)
                 
-                // Team 2 scoring view
-                TeamScoringView(match: match, team: match.team2)
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
+                ScrollView {
+                    // Team 1 scoring view
+                    TeamScoringView(match: match, team: match.team1)
+                        .padding(.horizontal)
+                        .padding(.bottom, 16)
+                    
+                    // Team 2 scoring view
+                    TeamScoringView(match: match, team: match.team2)
+                        .padding(.horizontal)
+                        .padding(.bottom, 8)
+                }
             }
         }
     }
