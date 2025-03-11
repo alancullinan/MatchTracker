@@ -38,6 +38,14 @@ struct MatchView: View {
                     }
                 }
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    selectedTab = .match
+                } label: {
+                    Text("Done")
+                }
+                .disabled(selectedTab == .match)
+            }
         }
     }
 }

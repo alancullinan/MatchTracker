@@ -30,13 +30,6 @@ struct EventsTabView: View {
                 }
             }
             .navigationTitle("Match Events")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
     

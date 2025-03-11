@@ -6,14 +6,11 @@ struct PlayerManagementView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationView {
-            List {
-                // Use a sorted array of players instead of direct access
-                ForEach(sortedPlayers) { player in
-                    PlayerRow(player: player)
-                }
+        List {
+            // Use a sorted array of players instead of direct access
+            ForEach(sortedPlayers) { player in
+                PlayerRow(player: player)
             }
-            .navigationTitle("\(team.name) Players")
         }
     }
     

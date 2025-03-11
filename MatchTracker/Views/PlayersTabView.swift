@@ -14,13 +14,14 @@ struct PlayersTabView: View {
     
     var body: some View {
         VStack {
+            Text("Players").font(.title)
             // Team selector
             Picker("Team", selection: $selectedTeamIndex) {
                 Text(match.team1.name.isEmpty ? "Team 1" : match.team1.name).tag(0)
                 Text(match.team2.name.isEmpty ? "Team 2" : match.team2.name).tag(1)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding()
+            .padding(.top)
             
             // Show players based on selected team
             if selectedTeamIndex == 0 {
