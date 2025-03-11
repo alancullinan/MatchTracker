@@ -5,40 +5,28 @@ struct MatchView: View {
     @Bindable var match: Match
     @Environment(\.dismiss) private var dismiss
     
+    // Track the selected tab
+    @State private var selectedTab: MatchTab = .match
+    
     var body: some View {
-        TabView {
-            // Tab 1: Main match screen (using current content)
-            mainMatchContent
-                .tabItem {
-                    Label("Match", systemImage: "stopwatch")
-                }
+        VStack(spacing: 0) {
+            // Content area - shows different views based on selectedTab
+            switch selectedTab {
+            case .match:
+                MatchTabView(match: match)
+            case .events:
+                EventsTabView(match: match)
+            case .players:
+                PlayersTabView(match: match)
+            case .settings:
+                SettingsTabView(match: match)
+            }
             
-            // Tab 2: Events list
-            EventListView(match: match)
-                .tabItem {
-                    Label("Events", systemImage: "list.bullet")
-                }
-            
-            // Tab 3: Team 1 Players
-            PlayerManagementView(team: match.team1)
-                .tabItem {
-                    Label(match.team1.name, systemImage: "person.3")
-                }
-            
-            // Tab 4: Team 2 Players
-            PlayerManagementView(team: match.team2)
-                .tabItem {
-                    Label(match.team2.name, systemImage: "person.3")
-                }
-            
-            // Tab 5: Match Settings
-            MatchFormView(match: match)
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
+            // Custom tab bar
+            customTabBar
         }
         .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline) // This makes the title centered and smaller
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
@@ -52,34 +40,40 @@ struct MatchView: View {
             }
         }
     }
-    
-    
-    // Move your current MatchView content into this computed property
-    private var mainMatchContent: some View {
-        VStack {
-            // Competition title
-            if !match.competition.isEmpty {
-                Text(match.competition)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .padding(.top, 4)
-                // Timer view
-                MatchTimerView(match: match)
-                    .padding(.bottom, 10)
-                
-                ScrollView {
-                    // Team 1 scoring view
-                    TeamScoringView(match: match, team: match.team1)
-                        .padding(.horizontal)
-                        .padding(.bottom, 16)
-                    
-                    // Team 2 scoring view
-                    TeamScoringView(match: match, team: match.team2)
-                        .padding(.horizontal)
-                        .padding(.bottom, 8)
+}
+
+// Extension for tab bar
+extension MatchView {
+    var customTabBar: some View {
+        HStack(spacing: 0) {
+            // Create a button for each tab
+            ForEach(MatchTab.allCases, id: \.self) { tab in
+                Button {
+                    withAnimation {
+                        selectedTab = tab
+                    }
+                } label: {
+                    VStack(spacing: 4) {
+                        Image(systemName: tab.iconName)
+                            .font(.system(size: 22))
+                        
+                        Text(tab == .players ? "Players" : tab.rawValue)
+                            .font(.caption)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(selectedTab == tab ? .blue : .gray)
+                    .padding(.vertical, 8)
                 }
             }
         }
+        .background(Color(UIColor.systemBackground))
+        .overlay(
+            Rectangle()
+                .frame(height: 0.5)
+                .foregroundColor(Color(UIColor.separator)),
+            alignment: .top
+        )
+        .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: -2)
     }
 }
 

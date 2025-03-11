@@ -14,13 +14,6 @@ struct PlayerManagementView: View {
                 }
             }
             .navigationTitle("\(team.name) Players")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
     

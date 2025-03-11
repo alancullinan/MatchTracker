@@ -6,10 +6,13 @@ struct PlayerRow: View {
     
     var body: some View {
         HStack {
-            Text("#\(player.jerseyNumber)")
+            Text("\(player.jerseyNumber)")
                 .font(.headline)
-                .frame(width: 40)
-            
+                .frame(width: 32, height: 32)
+                .background(Color.blue.opacity(0.8))
+                .foregroundColor(.white)
+                .cornerRadius(16)
+                
             TextField("Player Name", text: $player.name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             

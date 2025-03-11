@@ -1,5 +1,5 @@
 //
-//  EventListView.swift
+//  EventsTabView.swift
 //  MatchTracker
 //
 //  Created on 05/03/2025.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct EventListView: View {
+struct EventsTabView: View {
     // The match containing events to display
     @Bindable var match: Match
     
@@ -224,5 +224,5 @@ struct EventRow: View {
     
     match.events = [periodStartEvent, periodEndEvent]
     
-    return EventListView(match: match)
+    return EventsTabView(match: match)
 }
