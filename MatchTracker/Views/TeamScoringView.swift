@@ -27,7 +27,7 @@ struct TeamScoringView: View {
                         .background(Color.secondary.opacity(0.2))
                         .cornerRadius(8)
                 }
-                .disabled(!match.matchPeriod.isPlayPeriod)
+                .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                 
                 // Point button
                 Button(action: { recordScore(outcome: .point) }) {
@@ -37,7 +37,7 @@ struct TeamScoringView: View {
                         .background(Color.secondary.opacity(0.2))
                         .cornerRadius(8)
                 }
-                .disabled(!match.matchPeriod.isPlayPeriod)
+                .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                 
                 // Two-point button (only for football)
                 if match.matchType == .football {
@@ -48,7 +48,7 @@ struct TeamScoringView: View {
                             .background(Color.secondary.opacity(0.2))
                             .cornerRadius(8)
                     }
-                    .disabled(!match.matchPeriod.isPlayPeriod)
+                    .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                 }
             }
             
@@ -69,7 +69,7 @@ struct TeamScoringView: View {
                 .foregroundColor(.white)
                 .cornerRadius(8)
             }
-            .disabled(!match.matchPeriod.isPlayPeriod)
+            .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
