@@ -1,5 +1,5 @@
 //
-//  PlayersTabView.swift
+//  PlayersView.swift
 //  MatchTracker
 //
 //  Created by Alan Cullinan on 11/03/2025.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct PlayersTabView: View {
+struct PlayersView: View {
     @Bindable var match: Match
     @State private var selectedTeamIndex = 0
     

@@ -30,3 +30,37 @@ class Match {
 
     init() {}
 }
+
+extension Match {
+    // Returns events sorted with newest at the top
+    var sortedEventsByRecent: [Event] {
+        events.sorted { (event1, event2) -> Bool in
+            // First, sort by period (descending)
+            let period1Index = MatchPeriod.allCases.firstIndex(of: event1.period) ?? 0
+            let period2Index = MatchPeriod.allCases.firstIndex(of: event2.period) ?? 0
+            
+            if period1Index != period2Index {
+                return period1Index > period2Index
+            }
+            
+            // If same period, sort by time elapsed (descending)
+            return event1.timeElapsed > event2.timeElapsed
+        }
+    }
+    
+    // Returns events sorted chronologically (oldest first)
+    var sortedEventsChronologically: [Event] {
+        events.sorted { (event1, event2) -> Bool in
+            // First, sort by period
+            let period1Index = MatchPeriod.allCases.firstIndex(of: event1.period) ?? 0
+            let period2Index = MatchPeriod.allCases.firstIndex(of: event2.period) ?? 0
+            
+            if period1Index != period2Index {
+                return period1Index < period2Index
+            }
+            
+            // If same period, sort by time elapsed
+            return event1.timeElapsed < event2.timeElapsed
+        }
+    }
+}

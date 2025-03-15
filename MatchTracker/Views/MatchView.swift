@@ -3,85 +3,120 @@ import SwiftData
 
 struct MatchView: View {
     @Bindable var match: Match
-    @Environment(\.dismiss) private var dismiss
-    
-    // Track the selected tab
-    @State private var selectedTab: MatchTab = .match
+    @State private var showingPlayersList = false
+    @State private var showingEventsList = false
+    @State private var showingSettings = false
+    @State private var selectedTeam: Team?
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Content area - shows different views based on selectedTab
-            switch selectedTab {
-            case .match:
-                MatchTabView(match: match)
-            case .events:
-                EventsTabView(match: match)
-            case .players:
-                PlayersTabView(match: match)
-            case .settings:
-                SettingsTabView(match: match)
+        VStack {
+            // Match timer and core functionality
+            MatchTimerView(match: match)
+            
+            // Team scoring sections with player buttons
+            ScrollView {
+                VStack(spacing: 16) {
+                    TeamScoringView(match: match, team: match.team1)
+                        .overlay(alignment: .topTrailing) {
+                            Button(action: {
+                                selectedTeam = match.team1
+                                showingPlayersList = true
+                            }) {
+                                Image(systemName: "person.2")
+                                    .padding(8)
+                                    .background(Color.secondary.opacity(0.2))
+                                    .clipShape(Circle())
+                            }
+                            .padding(8)
+                        }
+                    
+                    TeamScoringView(match: match, team: match.team2)
+                        .overlay(alignment: .topTrailing) {
+                            Button(action: {
+                                selectedTeam = match.team2
+                                showingPlayersList = true
+                            }) {
+                                Image(systemName: "person.2")
+                                    .padding(8)
+                                    .background(Color.secondary.opacity(0.2))
+                                    .clipShape(Circle())
+                            }
+                            .padding(8)
+                        }
+                }
+                .padding(.horizontal)
             }
             
-            // Custom tab bar
-            customTabBar
-        }
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    HStack {
+            // Latest event display with View All button
+            VStack {
+                Divider()
+                
+                HStack {
+                    if let latestEvent = match.sortedEventsByRecent.first {
+                        EventRow(event: latestEvent)
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8)
+                    } else {
+                        Text("No events recorded")
+                            .padding()
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        showingEventsList = true
+                    }) {
                         Image(systemName: "list.bullet")
-                        Text("Matches")
+                            .padding(8)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
                     }
                 }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color(UIColor.secondarySystemBackground))
             }
+        }
+        .navigationTitle(match.competition.isEmpty ? "Match" : match.competition)
+        .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    selectedTab = .match
-                } label: {
-                    Text("Done")
-                }
-                .disabled(selectedTab == .match)
-            }
-        }
-    }
-}
-
-// Extension for tab bar
-extension MatchView {
-    var customTabBar: some View {
-        HStack(spacing: 0) {
-            // Create a button for each tab
-            ForEach(MatchTab.allCases, id: \.self) { tab in
-                Button {
-                    withAnimation {
-                        selectedTab = tab
-                    }
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: tab.iconName)
-                            .font(.system(size: 22))
-                        
-                        Text(tab == .players ? "Players" : tab.rawValue)
-                            .font(.caption)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(selectedTab == tab ? .blue : .gray)
-                    .padding(.vertical, 8)
+                Button(action: {
+                    showingSettings = true
+                }) {
+                    Image(systemName: "gearshape")
                 }
             }
         }
-        .background(Color(UIColor.systemBackground))
-        .overlay(
-            Rectangle()
-                .frame(height: 0.5)
-                .foregroundColor(Color(UIColor.separator)),
-            alignment: .top
-        )
-        .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: -2)
+        .sheet(isPresented: $showingEventsList) {
+            NavigationView {
+                EventListView(match: match)
+                    .navigationBarItems(trailing: Button("Done") {
+                        showingEventsList = false
+                    })
+            }
+        }
+        .sheet(isPresented: $showingPlayersList) {
+            if let team = selectedTeam {
+                NavigationView {
+                    PlayerManagementView(team: team)
+                        .navigationTitle("\(team.name) Players")
+                        .navigationBarItems(trailing: Button("Done") {
+                            showingPlayersList = false
+                        })
+                }
+            }
+        }
+        .sheet(isPresented: $showingSettings) {
+            NavigationView {
+                MatchSettingsView(match: match)
+                    .navigationTitle("Match Settings")
+                    .navigationBarItems(trailing: Button("Done") {
+                        showingSettings = false
+                    })
+            }
+        }
     }
 }
 

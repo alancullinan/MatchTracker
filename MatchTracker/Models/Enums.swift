@@ -68,18 +68,3 @@ enum CardType: String, Codable {
     case yellow, red, black
 }
 
-enum MatchTab: String, CaseIterable {
-    case match = "Match"
-    case events = "Events"
-    case players = "Players"
-    case settings = "Settings"
-    
-    var iconName: String {
-        switch self {
-        case .match: return "stopwatch"
-        case .events: return "list.bullet"
-        case .players: return "person.3"
-        case .settings: return "gearshape"
-        }
-    }
-}

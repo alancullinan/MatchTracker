@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct EventsTabView: View {
+struct EventListView: View {
     // The match containing events to display
     @Bindable var match: Match
     
@@ -23,7 +23,7 @@ struct EventsTabView: View {
                         .foregroundColor(.secondary)
                         .padding(.vertical)
                 } else {
-                    ForEach(sortedEvents, id: \.id) { event in
+                    ForEach(match.sortedEventsByRecent, id: \.id) { event in
                         EventRow(event: event)
                     }
                     .onDelete(perform: deleteEvents)
@@ -33,27 +33,11 @@ struct EventsTabView: View {
         }
     }
     
-    // Computed property to sort events by period and then by time
-    private var sortedEvents: [Event] {
-        match.events.sorted { (event1, event2) -> Bool in
-            // First, sort by period
-            let period1Index = MatchPeriod.allCases.firstIndex(of: event1.period) ?? 0
-            let period2Index = MatchPeriod.allCases.firstIndex(of: event2.period) ?? 0
-            
-            if period1Index != period2Index {
-                return period1Index < period2Index
-            }
-            
-            // If same period, sort by time elapsed
-            return event1.timeElapsed < event2.timeElapsed
-        }
-    }
-    
     // Function to delete events at specific indices
     private func deleteEvents(at offsets: IndexSet) {
         // Delete the events at the specified offsets using our sorted array
         for index in offsets {
-            if let eventIndex = match.events.firstIndex(where: { $0.id == sortedEvents[index].id }) {
+            if let eventIndex = match.events.firstIndex(where: { $0.id == match.sortedEventsByRecent[index].id }) {
                 match.events.remove(at: eventIndex)
             }
         }
@@ -217,5 +201,5 @@ struct EventRow: View {
     
     match.events = [periodStartEvent, periodEndEvent]
     
-    return EventsTabView(match: match)
+    return EventListView(match: match)
 }

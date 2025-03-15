@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct SettingsTabView: View {
+struct MatchSettingsView: View {
     @Bindable var match: Match
     
     var body: some View {
