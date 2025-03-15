@@ -3,10 +3,12 @@ import SwiftData
 
 struct MatchView: View {
     @Bindable var match: Match
-    @State private var showingPlayersList = false
     @State private var showingEventsList = false
     @State private var showingSettings = false
-    @State private var selectedTeam: Team?
+    
+    // Separate state variables for each team
+    @State private var showingTeam1Players = false
+    @State private var showingTeam2Players = false
     
     var body: some View {
         VStack {
@@ -19,8 +21,7 @@ struct MatchView: View {
                     TeamScoringView(match: match, team: match.team1)
                         .overlay(alignment: .topTrailing) {
                             Button(action: {
-                                selectedTeam = match.team1
-                                showingPlayersList = true
+                                showingTeam1Players = true
                             }) {
                                 Image(systemName: "person.2")
                                     .padding(8)
@@ -33,8 +34,7 @@ struct MatchView: View {
                     TeamScoringView(match: match, team: match.team2)
                         .overlay(alignment: .topTrailing) {
                             Button(action: {
-                                selectedTeam = match.team2
-                                showingPlayersList = true
+                                showingTeam2Players = true
                             }) {
                                 Image(systemName: "person.2")
                                     .padding(8)
@@ -89,23 +89,31 @@ struct MatchView: View {
                 }
             }
         }
+        // Separate sheets for each team
+        .sheet(isPresented: $showingTeam1Players) {
+            NavigationView {
+                PlayerManagementView(team: match.team1)
+                    .navigationTitle("\(match.team1.name) Players")
+                    .navigationBarItems(trailing: Button("Done") {
+                        showingTeam1Players = false
+                    })
+            }
+        }
+        .sheet(isPresented: $showingTeam2Players) {
+            NavigationView {
+                PlayerManagementView(team: match.team2)
+                    .navigationTitle("\(match.team2.name) Players")
+                    .navigationBarItems(trailing: Button("Done") {
+                        showingTeam2Players = false
+                    })
+            }
+        }
         .sheet(isPresented: $showingEventsList) {
             NavigationView {
                 EventListView(match: match)
                     .navigationBarItems(trailing: Button("Done") {
                         showingEventsList = false
                     })
-            }
-        }
-        .sheet(isPresented: $showingPlayersList) {
-            if let team = selectedTeam {
-                NavigationView {
-                    PlayerManagementView(team: team)
-                        .navigationTitle("\(team.name) Players")
-                        .navigationBarItems(trailing: Button("Done") {
-                            showingPlayersList = false
-                        })
-                }
             }
         }
         .sheet(isPresented: $showingSettings) {
