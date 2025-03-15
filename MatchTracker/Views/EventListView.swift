@@ -29,7 +29,6 @@ struct EventListView: View {
                     .onDelete(perform: deleteEvents)
                 }
             }
-            .navigationTitle("Match Events")
         }
     }
     

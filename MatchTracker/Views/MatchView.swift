@@ -111,6 +111,7 @@ struct MatchView: View {
         .sheet(isPresented: $showingEventsList) {
             NavigationView {
                 EventListView(match: match)
+                    .navigationTitle("Match Events")
                     .navigationBarItems(trailing: Button("Done") {
                         showingEventsList = false
                     })
