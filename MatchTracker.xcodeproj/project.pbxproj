@@ -10,16 +10,6 @@
 		E79A55702D6B5C0400586A56 /* MatchTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatchTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E74A43722D85A168002D3873 /* Exceptions for "MatchTracker" folder in "MatchTracker" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Views/EventEditView.swift,
-			);
-			target = E79A556F2D6B5C0400586A56 /* MatchTracker */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 		E74A43732D85A168002D3873 /* Exceptions for "MatchTracker" folder in "Copy Bundle Resources" phase from "MatchTracker" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
@@ -34,7 +24,6 @@
 		E79A55722D6B5C0400586A56 /* MatchTracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E74A43722D85A168002D3873 /* Exceptions for "MatchTracker" folder in "MatchTracker" target */,
 				E74A43732D85A168002D3873 /* Exceptions for "MatchTracker" folder in "Copy Bundle Resources" phase from "MatchTracker" target */,
 			);
 			path = MatchTracker;
