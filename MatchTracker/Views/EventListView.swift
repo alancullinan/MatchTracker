@@ -9,11 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct EventListView: View {
-    // The match containing events to display
     @Bindable var match: Match
-    
-    // Used to dismiss the view when presented modally
     @Environment(\.dismiss) private var dismiss
+    
+    // Add state variables for editing
+    @State private var selectedEvent: Event? = nil
+    @State private var showingEventEditor = false
     
     var body: some View {
         NavigationView {
@@ -25,8 +26,30 @@ struct EventListView: View {
                 } else {
                     ForEach(match.sortedEventsByRecent, id: \.id) { event in
                         EventRow(event: event)
+                            .contentShape(Rectangle()) // Make the entire row tappable
+                            .onTapGesture {
+                                selectedEvent = event
+                                showingEventEditor = true
+                            }
                     }
                     .onDelete(perform: deleteEvents)
+                }
+            }
+            .sheet(isPresented: $showingEventEditor, onDismiss: {
+                selectedEvent = nil
+            }) {
+                if let event = selectedEvent {
+                    NavigationView {
+                        EventEditView(match: match, event: event, onSave: {
+                            showingEventEditor = false
+                        }, onCancel: {
+                            showingEventEditor = false
+                        })
+                        .navigationTitle("Edit Event")
+                        .navigationBarItems(trailing: Button("Done") {
+                            showingEventEditor = false
+                        })
+                    }
                 }
             }
         }
