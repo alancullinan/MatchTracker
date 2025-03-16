@@ -10,6 +10,9 @@ struct MatchView: View {
     @State private var showingTeam1Players = false
     @State private var showingTeam2Players = false
     
+    @State private var selectedEvent: Event? = nil
+    @State private var showingEventEditor = false
+    
     var body: some View {
         VStack {
             // Match timer and core functionality
@@ -56,6 +59,14 @@ struct MatchView: View {
                         EventRow(event: latestEvent)
                             .padding(.vertical, 4)
                             .padding(.horizontal, 8)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedEvent = latestEvent
+                                // Use a slight delay before setting the flag
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    showingEventEditor = true
+                                }
+                            }
                     } else {
                         Text("No events recorded")
                             .padding()
@@ -106,6 +117,22 @@ struct MatchView: View {
                     .navigationBarItems(trailing: Button("Done") {
                         showingTeam2Players = false
                     })
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { self.showingEventEditor },
+            set: { self.showingEventEditor = $0 }
+        ), onDismiss: {
+            selectedEvent = nil
+        }) {
+            if let event = selectedEvent {
+                NavigationView {
+                    EventEditView(match: match, event: event, onSave: {
+                        showingEventEditor = false
+                    }, onCancel: {
+                        showingEventEditor = false
+                    })
+                }
             }
         }
         .sheet(isPresented: $showingEventsList) {

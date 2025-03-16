@@ -73,25 +73,25 @@ struct EventTypeSelectionView: View {
                 }
             }
             .navigationTitle("Record Event")
-            .navigationDestination(for: EventType.self) { eventType in
-                EventDetailView(
-                    match: match,
-                    team: team,
-                    eventType: eventType,
-                    onSave: {
-                        isPresented = false
-                    },
-                    onCancel: {
-                        navigationPath.removeLast()
-                    }
-                )
-            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         isPresented = false
                     }
                 }
+            }
+            .navigationDestination(for: EventType.self) { eventType in
+                EventDetailView(
+                    match: match,
+                    team: team,
+                    eventType: eventType,
+                    onSave: {
+                        isPresented = false  // Close all the way back to match view
+                    },
+                    onCancel: {
+                        navigationPath.removeLast()  // Just go back one level
+                    }
+                )
             }
         }
     }

@@ -76,33 +76,24 @@ struct EventEditView: View {
                         .lineLimit(3...5)
                 }
             }
-            
-            // Save button
-            Section {
-                Button("Update Event") {
-                    updateEvent()
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundColor(.blue)
-            }
-            
-            // Delete button
-            Section {
-                Button("Delete Event") {
-                    deleteEvent()
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundColor(.red)
-            }
         }
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    onCancel()
+        .navigationTitle("Edit Event") // Set the title here
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            onCancel()
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            // Call updateEvent() to save changes
+                            updateEvent()
+                            onSave()
+                        }
+                    }
                 }
             }
-        }
-    }
     
     private var eventTitle: String {
         switch event.type {
@@ -147,7 +138,7 @@ struct EventEditView: View {
             if let team = event.team, !team.players.isEmpty {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
-                    ForEach(team.players.sorted(by: { $0.jerseyNumber < $1.jerseyNumber }), id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
@@ -170,7 +161,7 @@ struct EventEditView: View {
             if let team = event.team, !team.players.isEmpty {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
@@ -191,7 +182,7 @@ struct EventEditView: View {
             if let team = event.team, !team.players.isEmpty {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
@@ -214,14 +205,14 @@ struct EventEditView: View {
             if let team = event.team, !team.players.isEmpty {
                 Picker("Player Coming Off", selection: $player1Selection) {
                     Text("Select Player").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
                 
                 Picker("Player Coming On", selection: $player2Selection) {
                     Text("Select Player").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }

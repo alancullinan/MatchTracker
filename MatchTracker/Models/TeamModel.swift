@@ -36,4 +36,10 @@ class Team {
     }
 }
 
+extension Team {
+    var sortedPlayers: [Player] {
+        players.sorted { $0.jerseyNumber < $1.jerseyNumber }
+    }
+}
+
 

@@ -36,15 +36,10 @@ struct PlayerManagementView: View {
     var body: some View {
         List {
             // Use a sorted array of players
-            ForEach(sortedPlayers) { player in
+            ForEach(team.sortedPlayers) { player in
                 PlayerRow(player: player)
             }
         }
-    }
-    
-    // Computed property to sort players by jersey number
-    private var sortedPlayers: [Player] {
-        team.players.sorted { $0.jerseyNumber < $1.jerseyNumber }
     }
 }
 

@@ -52,20 +52,21 @@ struct EventDetailView: View {
                         .lineLimit(3...5)
                 }
             }
-            
-            // Save button
-            Section {
-                Button("Save Event") {
-                    saveEvent()
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundColor(.blue)
-            }
         }
         .navigationTitle(eventTitle)
+        .navigationBarBackButtonHidden(true)  // Hide the back button
         .toolbar {
+            // Only add the Save button on the right
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save") {
+                    saveEvent()
+                    onSave()
+                }
+            }
+            
+            // Add a custom Cancel/Back button on the left
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
+                Button("Back") {
                     onCancel()
                 }
             }
@@ -109,7 +110,7 @@ struct EventDetailView: View {
             if !team.players.isEmpty {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
-                    ForEach(team.players.sorted(by: { $0.jerseyNumber < $1.jerseyNumber }), id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
@@ -128,7 +129,7 @@ struct EventDetailView: View {
             if !team.players.isEmpty {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
@@ -148,7 +149,7 @@ struct EventDetailView: View {
             if !team.players.isEmpty {
                 Picker("Player", selection: $player1Selection) {
                     Text("Not Specified").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
@@ -174,14 +175,14 @@ struct EventDetailView: View {
             } else {
                 Picker("Player Coming Off", selection: $player1Selection) {
                     Text("Select Player").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }
                 
                 Picker("Player Coming On", selection: $player2Selection) {
                     Text("Select Player").tag(nil as Player?)
-                    ForEach(team.players, id: \.id) { player in
+                    ForEach(team.sortedPlayers, id: \.id) { player in
                         Text("#\(player.jerseyNumber) \(player.name)").tag(player as Player?)
                     }
                 }

@@ -45,10 +45,6 @@ struct EventListView: View {
                         }, onCancel: {
                             showingEventEditor = false
                         })
-                        .navigationTitle("Edit Event")
-                        .navigationBarItems(trailing: Button("Done") {
-                            showingEventEditor = false
-                        })
                     }
                 }
             }
