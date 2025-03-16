@@ -174,12 +174,12 @@ struct MatchTimerView: View {
             }
             
             // Create period start event
-            let periodStartEvent = Event(
-                type: .periodStart,
-                period: match.matchPeriod,
-                timeElapsed: 0
-            )
-            match.events.append(periodStartEvent)
+//            let periodStartEvent = Event(
+//                type: .periodStart,
+//                period: match.matchPeriod,
+//                timeElapsed: 0
+//            )
+//            match.events.append(periodStartEvent)
             
             // Update match state
             match.currentPeriodStart = Date()

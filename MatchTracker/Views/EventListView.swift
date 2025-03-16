@@ -155,10 +155,20 @@ struct EventRow: View {
         
         // For other event types
         switch event.type {
-        case .periodStart:
-            return "Period Start"
         case .periodEnd:
-            return "Period End"
+                // You might want to customize how period ends are displayed
+                switch event.period {
+                case .firstHalf:
+                    return "Half Time"
+                case .secondHalf:
+                    return "Full Time"
+                case .extraTimeFirstHalf:
+                    return "Half Time (ET)"
+                case .extraTimeSecondHalf:
+                    return "Full Time (ET)"
+                default:
+                    return "Period End"
+                }
         case .substitution:
             return "Substitution"
         case .kickout:
