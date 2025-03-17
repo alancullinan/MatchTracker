@@ -17,6 +17,7 @@ struct MatchView: View {
         VStack {
             // Match timer and core functionality
             MatchTimerView(match: match)
+                .padding(.top)
             
             // Team scoring sections with player buttons
             ScrollView {
