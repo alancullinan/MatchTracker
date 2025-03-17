@@ -8,10 +8,10 @@ struct TeamScoringView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            // Team name - bigger font
+            // Team name with Record Event button overlay
             Text(team.name.isEmpty ? "Team" : team.name)
                 .font(.title2)
-                .fontWeight(.bold)
+                //.fontWeight(.bold)
             
             // Score and scoring buttons using GeometryReader for consistent proportions
             GeometryReader { geometry in
@@ -24,9 +24,9 @@ struct TeamScoringView: View {
                                 .foregroundColor(.green)
                                 .font(.system(size: 22))
                                 .padding(.vertical, 12)
-                                .padding(.horizontal, 16)
+                                .padding(.horizontal, 12)
                                 .background(Color.secondary.opacity(0.2))
-                                .cornerRadius(8)
+                                .clipShape(Circle())
                         }
                         .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                     }
@@ -37,9 +37,9 @@ struct TeamScoringView: View {
                         VStack(spacing: 0) {
                             // Slightly smaller score
                             Text(formattedMainScore)
-                                .font(.system(size: 32, weight: .bold, design: .rounded))
+                                .font(.system(size: 40))
                             Text("(\(formattedTotalScore))")
-                                .font(.system(size: 16, design: .rounded))
+                                .font(.system(size: 14))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -57,7 +57,7 @@ struct TeamScoringView: View {
                                         .padding(.vertical, 12)
                                         .padding(.horizontal, 12)
                                         .background(Color.secondary.opacity(0.2))
-                                        .cornerRadius(8)
+                                        .clipShape(Circle())
                                 }
                                 .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                             }
@@ -70,7 +70,7 @@ struct TeamScoringView: View {
                                     .padding(.vertical, 12)
                                     .padding(.horizontal, 12)
                                     .background(Color.secondary.opacity(0.2))
-                                    .cornerRadius(8)
+                                    .clipShape(Circle())
                             }
                             .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                         }
@@ -80,29 +80,27 @@ struct TeamScoringView: View {
                 }
             }
             .frame(height: 70) // Set a fixed height for the GeometryReader
-            
-            Divider()
-                .padding(.vertical, 8)
-            
-            // Other events button
-            Button(action: {
-                showEventTypeSelection = true
-            }) {
-                HStack {
-                    Image(systemName: "plus.circle")
-                    Text("Record Event")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-            }
-            .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(12)
+        .overlay(alignment: .topLeading) {
+            Button(action: {
+                showEventTypeSelection = true
+            }) {
+                HStack(spacing: 4) {
+                    Image(systemName: "plus.circle")
+                    Text("Event")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                }
+                .padding(8)
+                .background(Color.secondary.opacity(0.2))
+                .cornerRadius(12)
+            }
+            .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
+            .padding(8)
+        }
         .sheet(isPresented: $showEventTypeSelection) {
             EventTypeSelectionView(match: match, team: team, isPresented: $showEventTypeSelection)
         }
@@ -121,12 +119,6 @@ struct TeamScoringView: View {
     // Format total score
     private var formattedTotalScore: String {
         "\(teamScores.total)"
-    }
-    
-    // Traditional GAA score format (not used directly in the view anymore)
-    private var scoreDisplay: String {
-        let scores = teamScores
-        return "\(scores.goals)-\(scores.points) (\(scores.total))"
     }
     
     // Your existing methods remain unchanged
