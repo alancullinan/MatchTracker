@@ -7,50 +7,79 @@ struct TeamScoringView: View {
     @State private var showEventTypeSelection = false
     
     var body: some View {
-        VStack(spacing: 8) {
-            // Team name
+        VStack(spacing: 10) {
+            // Team name - bigger font
             Text(team.name.isEmpty ? "Team" : team.name)
-                .font(.headline)
+                .font(.title2)
                 .fontWeight(.bold)
             
-            // Score display
-            Text(scoreDisplay)
-                .font(.system(size: 32, weight: .bold, design: .rounded))
-            
-            // Simple scoring buttons row
-            HStack(spacing: 10) {
-                // Goal button
-                Button(action: { recordScore(outcome: .goal) }) {
-                    Text("Goal")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color.secondary.opacity(0.2))
-                        .cornerRadius(8)
-                }
-                .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
-                
-                // Point button
-                Button(action: { recordScore(outcome: .point) }) {
-                    Text("Point")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color.secondary.opacity(0.2))
-                        .cornerRadius(8)
-                }
-                .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
-                
-                // Two-point button (only for football)
-                if match.matchType == .football {
-                    Button(action: { recordScore(outcome: .twoPointer) }) {
-                        Text("2 Point")
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                            .background(Color.secondary.opacity(0.2))
-                            .cornerRadius(8)
+            // Score and scoring buttons using GeometryReader for consistent proportions
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    // Left section - Goal button (30% of width)
+                    ZStack {
+                        // Goal button (green flag)
+                        Button(action: { recordScore(outcome: .goal) }) {
+                            Image(systemName: "flag.fill")
+                                .foregroundColor(.green)
+                                .font(.system(size: 22))
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 16)
+                                .background(Color.secondary.opacity(0.2))
+                                .cornerRadius(8)
+                        }
+                        .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
                     }
-                    .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
+                    .frame(width: geometry.size.width * 0.3)
+                    
+                    // Center section - Score display (40% of width)
+                    ZStack {
+                        VStack(spacing: 0) {
+                            // Slightly smaller score
+                            Text(formattedMainScore)
+                                .font(.system(size: 32, weight: .bold, design: .rounded))
+                            Text("(\(formattedTotalScore))")
+                                .font(.system(size: 16, design: .rounded))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .frame(width: geometry.size.width * 0.4)
+                    
+                    // Right section - Point/2-Point buttons (30% of width)
+                    ZStack {
+                        HStack(spacing: 8) {
+                            // Two-point button (orange flag - only for football)
+                            if match.matchType == .football {
+                                Button(action: { recordScore(outcome: .twoPointer) }) {
+                                    Image(systemName: "flag.fill")
+                                        .foregroundColor(.orange)
+                                        .font(.system(size: 22))
+                                        .padding(.vertical, 12)
+                                        .padding(.horizontal, 12)
+                                        .background(Color.secondary.opacity(0.2))
+                                        .cornerRadius(8)
+                                }
+                                .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
+                            }
+                            
+                            // Point button (white flag with border for visibility)
+                            Button(action: { recordScore(outcome: .point) }) {
+                                Image(systemName: "flag.fill")
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 22))
+                                    .padding(.vertical, 12)
+                                    .padding(.horizontal, 12)
+                                    .background(Color.secondary.opacity(0.2))
+                                    .cornerRadius(8)
+                            }
+                            .disabled(!match.matchPeriod.isPlayPeriod || match.isPaused)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .frame(width: geometry.size.width * 0.3)
                 }
             }
+            .frame(height: 70) // Set a fixed height for the GeometryReader
             
             Divider()
                 .padding(.vertical, 8)
@@ -79,12 +108,28 @@ struct TeamScoringView: View {
         }
     }
     
-    // Traditional GAA score format: goals-points (total)
+    // Compute the scores once
+    private var teamScores: (goals: Int, points: Int, total: Int) {
+        calculateTeamScores()
+    }
+    
+    // Format main score as goals-points
+    private var formattedMainScore: String {
+        "\(teamScores.goals)-\(teamScores.points)"
+    }
+    
+    // Format total score
+    private var formattedTotalScore: String {
+        "\(teamScores.total)"
+    }
+    
+    // Traditional GAA score format (not used directly in the view anymore)
     private var scoreDisplay: String {
-        let scores = calculateTeamScores()
+        let scores = teamScores
         return "\(scores.goals)-\(scores.points) (\(scores.total))"
     }
     
+    // Your existing methods remain unchanged
     private func recordScore(outcome: ShotOutcome) {
         // Create the event
         let event = Event(
