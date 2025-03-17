@@ -88,10 +88,21 @@ struct MatchView: View {
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-                .background(Color(UIColor.secondarySystemBackground))
             }
+            .background(Color(UIColor.secondarySystemBackground).opacity(0.7))
+            .cornerRadius(12)
+            .padding(.horizontal)
+            .padding(.bottom, 8)
         }
+        .background(
+            Image("grass-background")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .opacity(0.3)
+                .edgesIgnoringSafeArea(.all)
+        )
         .navigationTitle(match.competition.isEmpty ? "Match" : match.competition)
+        .navigationBarTitleDisplayMode(.inline) // Add this line to center the title
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {

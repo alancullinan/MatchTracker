@@ -37,9 +37,9 @@ struct TeamScoringView: View {
                         VStack(spacing: 0) {
                             // Slightly smaller score
                             Text(formattedMainScore)
-                                .font(.system(size: 40))
+                                .font(.system(size: 46))
                             Text("(\(formattedTotalScore))")
-                                .font(.system(size: 14))
+                                .font(.system(size: 18))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -82,7 +82,7 @@ struct TeamScoringView: View {
             .frame(height: 70) // Set a fixed height for the GeometryReader
         }
         .padding()
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color(UIColor.secondarySystemBackground).opacity(0.5))
         .cornerRadius(12)
         .overlay(alignment: .topLeading) {
             Button(action: {
