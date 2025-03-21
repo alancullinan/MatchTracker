@@ -98,7 +98,7 @@ struct MatchView: View {
             Image("grass-background")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .opacity(0.3)
+                .opacity(0.6)
                 .edgesIgnoringSafeArea(.all)
         )
         .navigationTitle(match.competition.isEmpty ? "Match" : match.competition)
