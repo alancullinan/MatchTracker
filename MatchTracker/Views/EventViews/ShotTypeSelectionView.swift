@@ -91,11 +91,6 @@ struct ShotTypeButton: View {
                     .foregroundColor(isSelected ? .blue : .primary)
                 
                 Spacer()
-                
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.blue)
-                }
             }
             .padding(.vertical, 8)
             .padding(.horizontal, 12)

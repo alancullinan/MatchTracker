@@ -40,11 +40,14 @@ struct EventListView: View {
             }) {
                 if let event = selectedEvent {
                     NavigationView {
-                        EventEditView(match: match, event: event, onSave: {
-                            showingEventEditor = false
-                        }, onCancel: {
-                            showingEventEditor = false
-                        })
+                        EventEditView(
+                            match: match,
+                            event: event,
+                            onSave: {
+                                showingEventEditor = false
+                            }
+                            // Remove the onCancel parameter here
+                        )
                     }
                 }
             }

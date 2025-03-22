@@ -138,14 +138,8 @@ struct EventTypeSelectionView: View {
                     onSave: {
                         selectedEvent = nil
                         isPresented = false
-                    },
-                    onCancel: {
-                        // If canceled, remove the event from the match
-                        if let index = match.events.firstIndex(where: { $0.id == event.id }) {
-                            match.events.remove(at: index)
-                        }
-                        selectedEvent = nil
                     }
+                    // Remove the onCancel parameter and its closure
                 )
             }
         }

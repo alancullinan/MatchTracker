@@ -62,11 +62,7 @@ struct PlayerSelectButton: View {
                     .foregroundColor(isSelected ? .blue : .primary)
                 
                 Spacer()
-                
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.blue)
-                }
+
             }
             .padding(.vertical, 6)
             .padding(.horizontal, 10)

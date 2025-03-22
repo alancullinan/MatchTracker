@@ -6,12 +6,15 @@ struct TeamScoringView: View {
     let team: Team
     @State private var showEventTypeSelection = false
     
+    // For immediate event editing
+    @State private var selectedEvent: Event?
+    @State private var showingEventEditor = false
+    
     var body: some View {
         VStack(spacing: 10) {
-            // Team name with Record Event button overlay
+            // Team name
             Text(team.name.isEmpty ? "Team" : team.name)
                 .font(.title2)
-                //.fontWeight(.bold)
             
             // Score and scoring buttons using GeometryReader for consistent proportions
             GeometryReader { geometry in
@@ -37,9 +40,9 @@ struct TeamScoringView: View {
                         VStack(spacing: 0) {
                             // Slightly smaller score
                             Text(formattedMainScore)
-                                .font(.system(size: 46))
+                                .font(.system(size: 40))
                             Text("(\(formattedTotalScore))")
-                                .font(.system(size: 18))
+                                .font(.system(size: 14))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -82,7 +85,7 @@ struct TeamScoringView: View {
             .frame(height: 70) // Set a fixed height for the GeometryReader
         }
         .padding()
-        .background(Color(UIColor.secondarySystemBackground).opacity(0.5))
+        .background(Color(UIColor.secondarySystemBackground).opacity(0.7))
         .cornerRadius(12)
         .overlay(alignment: .topLeading) {
             Button(action: {
@@ -104,6 +107,18 @@ struct TeamScoringView: View {
         .sheet(isPresented: $showEventTypeSelection) {
             EventTypeSelectionView(match: match, team: team, isPresented: $showEventTypeSelection)
         }
+        .sheet(item: $selectedEvent) { event in
+            NavigationView {
+                EventEditView(
+                    match: match,
+                    event: event,
+                    onSave: {
+                        selectedEvent = nil
+                    }
+                )
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
+        }
     }
     
     // Compute the scores once
@@ -121,10 +136,9 @@ struct TeamScoringView: View {
         "\(teamScores.total)"
     }
     
-    // Your existing methods remain unchanged
     private func recordScore(outcome: ShotOutcome) {
         // Create the event
-        let event = Event(
+        let newEvent = Event(
             type: .shot,
             period: match.matchPeriod,
             timeElapsed: match.elapsedTime,
@@ -133,8 +147,11 @@ struct TeamScoringView: View {
             shotType: .fromPlay
         )
         
-        // Add the event
-        match.events.append(event)
+        // Add to match events collection
+        match.events.append(newEvent)
+        
+        // Use item binding for sheet presentation instead of isPresented
+        selectedEvent = newEvent
     }
     
     private func calculateTeamScores() -> (goals: Int, points: Int, total: Int) {

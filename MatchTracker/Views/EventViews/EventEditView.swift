@@ -5,8 +5,8 @@ struct EventEditView: View {
     @Bindable var match: Match
     @Bindable var event: Event
     var onSave: () -> Void
-    var onCancel: () -> Void
-    @Environment(\.colorScheme) var colorScheme
+    
+    // Note: Removed onCancel parameter
     
     var body: some View {
         ZStack {
@@ -77,12 +77,7 @@ struct EventEditView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    onCancel()
-                }
-            }
-            
+            // Only Done button in the toolbar
             ToolbarItem(placement: .confirmationAction) {
                 Button("Done") {
                     onSave()
