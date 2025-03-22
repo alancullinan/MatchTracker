@@ -15,7 +15,7 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = E79A556E2D6B5C0400586A56 /* Resources */;
 			membershipExceptions = (
-				Views/EventEditView.swift,
+				Views/EventViews/EventEditView.swift,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
