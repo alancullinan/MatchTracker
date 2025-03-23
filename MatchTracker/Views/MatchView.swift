@@ -57,7 +57,7 @@ struct MatchView: View {
                 
                 HStack {
                     if let latestEvent = match.sortedEventsByRecent.first {
-                        EventRow(event: latestEvent)
+                        EventRow(event: latestEvent, match: match)
                             .padding(.vertical, 4)
                             .padding(.horizontal, 8)
                             .contentShape(Rectangle())

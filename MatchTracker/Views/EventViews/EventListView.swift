@@ -25,7 +25,7 @@ struct EventListView: View {
                         .padding(.vertical)
                 } else {
                     ForEach(match.sortedEventsByRecent, id: \.id) { event in
-                        EventRow(event: event)
+                        EventRow(event: event, match: match)
                             .contentShape(Rectangle()) // Make the entire row tappable
                             .onTapGesture {
                                 selectedEvent = event
@@ -68,34 +68,49 @@ struct EventListView: View {
 // EventRow in EventListView.swift
 struct EventRow: View {
     let event: Event
+    let match: Match // We need match to calculate running score
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            // Top line: Team name, time and period
             HStack {
-                // Display the time in MM:SS format
-                Text(formatTime(event.timeElapsed))
-                    .font(.headline)
-                    .frame(width: 60, alignment: .leading)
-                
-                // Display the period
-                Text(event.period.rawValue)
-                    .font(.caption)
+                // Team name on the left
+                if let team = event.team {
+                    Text(team.name)
+                        .font(.headline)
+                }
                 
                 Spacer()
                 
-                // Event description (based on type and outcome)
-                Text(displayTextForEvent(event))
-                    .font(.subheadline)
-            }
-            
-            // Show team name if available
-            if let team = event.team {
-                Text(team.name)
-                    .font(.subheadline)
+                // Time and period in smaller text on the right
+                Text(formatTime(event.timeElapsed))
+                    .font(.caption)
+                
+//                Text("•")
+//                    .font(.caption)
+//                    .foregroundColor(.secondary)
+                
+                Text(event.period.rawValue)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
             
-            // In EventRow in EventListView.swift, add this after the team display
+            // Second line: Event description
+            Text(displayTextForEvent(event))
+                .font(.subheadline)
+                .foregroundColor(.primary)
+            
+            // Show running score if this was a scoring event (goal/point/two-pointer)
+            if event.type == .shot,
+               let outcome = event.shotOutcome,
+               [.goal, .point, .twoPointer].contains(outcome) {
+                Text(formatRunningScore())
+                    .font(.subheadline)
+                    .foregroundColor(.blue)
+                    .padding(.top, 2)
+                    .lineLimit(2) // Ensure we show both lines
+            }
+            
             // Show player 1 if available
             if let player = event.player1 {
                 Text("#\(player.jerseyNumber) \(player.name)")
@@ -208,6 +223,61 @@ struct EventRow: View {
         case .mark:
             return "Mark"
         }
+    }
+    
+    // Calculate and format the running score up to and including this event
+    private func formatRunningScore() -> String {
+        // Get all events up to and including the current event
+        let eventsUpToThis = match.events.filter { matchEvent in
+            // First filter by period
+            let periodIndex = MatchPeriod.allCases.firstIndex(of: matchEvent.period) ?? 0
+            let thisEventPeriodIndex = MatchPeriod.allCases.firstIndex(of: event.period) ?? 0
+            
+            if periodIndex < thisEventPeriodIndex {
+                // Include all events from earlier periods
+                return true
+            } else if periodIndex > thisEventPeriodIndex {
+                // Exclude events from later periods
+                return false
+            } else {
+                // For events in the same period, include only those with elapsed time <= this event
+                return matchEvent.timeElapsed <= event.timeElapsed
+            }
+        }
+        
+        // Calculate scores for both teams based on filtered events
+        var team1Goals = 0
+        var team1Points = 0
+        var team2Goals = 0
+        var team2Points = 0
+        
+        for matchEvent in eventsUpToThis {
+            if matchEvent.type == .shot,
+               let outcome = matchEvent.shotOutcome,
+               let team = matchEvent.team {
+                
+                if team.id == match.team1.id {
+                    if outcome == .goal {
+                        team1Goals += 1
+                    } else if outcome == .point {
+                        team1Points += 1
+                    } else if outcome == .twoPointer {
+                        team1Points += 2
+                    }
+                } else if team.id == match.team2.id {
+                    if outcome == .goal {
+                        team2Goals += 1
+                    } else if outcome == .point {
+                        team2Points += 1
+                    } else if outcome == .twoPointer {
+                        team2Points += 2
+                    }
+                }
+            }
+        }
+        
+        // Format each team's score on a separate line
+        return "\(match.team1.name): \(team1Goals)-\(team1Points)\n\(match.team2.name): \(team2Goals)-\(team2Points)"
     }
 }
 
