@@ -1,10 +1,4 @@
-//
-//  NoteDetailsContent.swift
-//  MatchTracker
-//
-//  Created by Alan Cullinan on 22/03/2025.
-//
-
+// NoteDetailsContent.swift
 import SwiftUI
 import SwiftData
 
@@ -12,22 +6,27 @@ struct NoteDetailsContent: View {
     @Bindable var match: Match
     @Bindable var event: Event
     
-    // Local state for optional values
-    @State private var shotOutcome: ShotOutcome
-    @State private var shotType: ShotType
-    
     init(match: Match, event: Event) {
         self.match = match
         self.event = event
-        _shotOutcome = State(initialValue: event.shotOutcome ?? .wide)
-        _shotType = State(initialValue: event.shotType ?? .fromPlay)
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Note Details")
-                .font(.headline)
+//            Text("Note")
+//                .font(.headline)
             
+            // We can use a direct binding on the noteText property
+            // with a default value for when it's nil
+            TextField("Enter note details", text: Binding(
+                get: { event.noteText ?? "" },
+                set: { event.noteText = $0.isEmpty ? nil : $0 }
+            ), axis: .vertical)
+                .lineLimit(5...10)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(10)
+                .background(Color(UIColor.tertiarySystemGroupedBackground))
+                .cornerRadius(10)
         }
     }
 }

@@ -8,71 +8,67 @@ struct ShotTypeSelectionView: View {
     @Binding var shotType: ShotType
     
     var body: some View {
-        
-        
-        ScrollView(.vertical, showsIndicators: true) {
-            VStack(spacing: 8) {
-                ShotTypeButton(
-                    isSelected: shotType == .fromPlay,
-                    title: "From Play",
-                    action: {
-                        shotType = .fromPlay
-                        event.shotType = .fromPlay
-                    }
-                )
-                
-                ShotTypeButton(
-                    isSelected: shotType == .free,
-                    title: "Free",
-                    action: {
-                        shotType = .free
-                        event.shotType = .free
-                    }
-                )
-                
-                ShotTypeButton(
-                    isSelected: shotType == .penalty,
-                    title: "Penalty",
-                    action: {
-                        shotType = .penalty
-                        event.shotType = .penalty
-                    }
-                )
-                
-                ShotTypeButton(
-                    isSelected: shotType == .fortyFive,
-                    title: "45m/65m",
-                    action: {
-                        shotType = .fortyFive
-                        event.shotType = .fortyFive
-                    }
-                )
-                
-                ShotTypeButton(
-                    isSelected: shotType == .sideline,
-                    title: "Sideline",
-                    action: {
-                        shotType = .sideline
-                        event.shotType = .sideline
-                    }
-                )
-                
-                if match.matchType == .football || match.matchType == .ladiesFootball {
-                    ShotTypeButton(
-                        isSelected: shotType == .mark,
-                        title: "Mark",
-                        action: {
-                            shotType = .mark
-                            event.shotType = .mark
-                        }
-                    )
+        // Remove ScrollView and directly use VStack
+        VStack(spacing: 8) {
+            ShotTypeButton(
+                isSelected: shotType == .fromPlay,
+                title: "From Play",
+                action: {
+                    shotType = .fromPlay
+                    event.shotType = .fromPlay
                 }
+            )
+            
+            ShotTypeButton(
+                isSelected: shotType == .free,
+                title: "Free",
+                action: {
+                    shotType = .free
+                    event.shotType = .free
+                }
+            )
+            
+            ShotTypeButton(
+                isSelected: shotType == .penalty,
+                title: "Penalty",
+                action: {
+                    shotType = .penalty
+                    event.shotType = .penalty
+                }
+            )
+            
+            ShotTypeButton(
+                isSelected: shotType == .fortyFive,
+                title: "45m/65m",
+                action: {
+                    shotType = .fortyFive
+                    event.shotType = .fortyFive
+                }
+            )
+            
+            ShotTypeButton(
+                isSelected: shotType == .sideline,
+                title: "Sideline",
+                action: {
+                    shotType = .sideline
+                    event.shotType = .sideline
+                }
+            )
+            
+            if match.matchType == .football || match.matchType == .ladiesFootball {
+                ShotTypeButton(
+                    isSelected: shotType == .mark,
+                    title: "Mark",
+                    action: {
+                        shotType = .mark
+                        event.shotType = .mark
+                    }
+                )
             }
-            .padding(.vertical, 6)
         }
+        .padding(.vertical, 6)
         .background(Color(UIColor.tertiarySystemGroupedBackground))
         .cornerRadius(10)
-        .frame(maxHeight: .infinity)
         .frame(maxWidth: .infinity)
     }
 }
