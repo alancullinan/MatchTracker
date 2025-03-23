@@ -100,7 +100,7 @@ struct EventRow: View {
                 .font(.subheadline)
                 .foregroundColor(.primary)
             
-            // Show running score if this was a scoring event (goal/point/two-pointer)
+            // Show running score if this was a scoring event or period end
             if event.type == .shot,
                let outcome = event.shotOutcome,
                [.goal, .point, .twoPointer].contains(outcome) {
@@ -108,7 +108,13 @@ struct EventRow: View {
                     .font(.subheadline)
                     .foregroundColor(.blue)
                     .padding(.top, 2)
-                    .lineLimit(2) // Ensure we show both lines
+                    .lineLimit(2)
+            } else if event.type == .periodEnd {
+                Text(formatRunningScore())
+                    .font(.subheadline)
+                    .foregroundColor(.blue)
+                    .padding(.top, 2)
+                    .lineLimit(2)
             }
             
             // Show player 1 if available
