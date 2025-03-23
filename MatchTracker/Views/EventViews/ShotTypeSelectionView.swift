@@ -93,7 +93,7 @@ struct ShotTypeButton: View {
                 Spacer()
             }
             .padding(.vertical, 8)
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 10)
             .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
             .cornerRadius(8)
             .contentShape(Rectangle())

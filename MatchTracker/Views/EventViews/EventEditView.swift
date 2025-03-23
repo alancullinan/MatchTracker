@@ -14,7 +14,7 @@ struct EventEditView: View {
             Color(UIColor.systemGroupedBackground)
                 .edgesIgnoringSafeArea(.all)
             
-            VStack(spacing: 16) {
+            VStack {
                 // Custom title with icon
                 HStack {
                     eventTypeIcon
@@ -24,7 +24,7 @@ struct EventEditView: View {
                         .font(.title)
                         .fontWeight(.bold)
                 }
-                .padding(.top, 16)
+                .padding(.top, -16)
                 
                 // Team, time and period info
                 VStack(alignment: .leading, spacing: 8) {
@@ -54,9 +54,9 @@ struct EventEditView: View {
                 // Notes section
                 if event.type != .note {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Additional Notes")
-                            .font(.headline)
-                            .padding(.horizontal)
+//                        Text("Notes")
+//                            .font(.subheadline)
+//                            .padding(.horizontal)
                         
                         let noteBinding = Binding<String>(
                             get: { self.event.noteText ?? "" },
@@ -122,9 +122,9 @@ struct EventEditView: View {
                 EmptyView()
             }
         }
-        .padding()
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(10)
+//        .padding()
+//        .background(Color(UIColor.secondarySystemGroupedBackground))
+//        .cornerRadius(10)
     }
     
     private var eventTypeTitle: String {
