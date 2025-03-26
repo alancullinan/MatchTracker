@@ -43,8 +43,10 @@ struct MatchListView: View {
             .navigationTitle("Matches")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("New Match") {
+                    Button(action: {
                         showingNewMatch = true
+                    }) {
+                        Image(systemName: "plus")
                     }
                 }
                 
